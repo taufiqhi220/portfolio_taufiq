@@ -1,0 +1,175 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Project;
+use App\Models\ToolStack;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class ProjectController extends Controller
+{
+    public function index(): Response
+    {
+        $projects = Project::with(['category', 'tools'])
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return Inertia::render('Admin/Projects/Index', [
+            'projects' => $projects,
+        ]);
+    }
+
+    public function create(): Response
+    {
+        $categories = Category::orderBy('sort_order', 'asc')->get();
+        $tools = ToolStack::orderBy('sort_order', 'asc')->get();
+
+        return Inertia::render('Admin/Projects/Create', [
+            'categories' => $categories,
+            'tools' => $tools,
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'category_id' => ['required', 'exists:categories,id'],
+            'title' => ['required', 'string', 'max:200'],
+            'slug' => ['nullable', 'string', 'max:200', 'unique:projects,slug'],
+            'custom_badge' => ['nullable', 'string', 'max:50'],
+            'summary' => ['required', 'string', 'max:500'],
+            'description' => ['nullable', 'string'],
+            'problem_statement' => ['nullable', 'string'],
+            'solution' => ['nullable', 'string'],
+            'media_type' => ['required', 'in:image,video_embed,video_file'],
+            'video_url' => ['nullable', 'string', 'max:500'],
+            'thumbnail_file' => ['nullable', 'image', 'max:5120'],
+            'thumbnail_url' => ['nullable', 'string', 'max:500'],
+            'live_url' => ['nullable', 'string', 'max:500'],
+            'github_url' => ['nullable', 'string', 'max:500'],
+            'is_featured' => ['boolean'],
+            'sort_order' => ['integer'],
+            'tool_ids' => ['array'],
+            'tool_ids.*' => ['exists:tools_stacks,id'],
+        ]);
+
+        $slug = !empty($validated['slug'])
+            ? Str::slug($validated['slug'])
+            : Str::slug($validated['title']);
+
+        // Handle thumbnail upload or URL
+        $thumbnailPath = $validated['thumbnail_url'] ?? null;
+        if ($request->hasFile('thumbnail_file')) {
+            $path = $request->file('thumbnail_file')->store('thumbnails', 'public');
+            $thumbnailPath = '/storage/' . $path;
+        }
+
+        $project = Project::create([
+            'category_id' => $validated['category_id'],
+            'title' => $validated['title'],
+            'slug' => $slug,
+            'custom_badge' => $validated['custom_badge'] ?? null,
+            'summary' => $validated['summary'],
+            'description' => $validated['description'] ?? null,
+            'problem_statement' => $validated['problem_statement'] ?? null,
+            'solution' => $validated['solution'] ?? null,
+            'media_type' => $validated['media_type'],
+            'video_url' => $validated['video_url'] ?? null,
+            'thumbnail_path' => $thumbnailPath,
+            'live_url' => $validated['live_url'] ?? null,
+            'github_url' => $validated['github_url'] ?? null,
+            'is_featured' => $request->boolean('is_featured'),
+            'sort_order' => $validated['sort_order'] ?? 0,
+        ]);
+
+        if (!empty($validated['tool_ids'])) {
+            $project->tools()->sync($validated['tool_ids']);
+        }
+
+        return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil ditambahkan.');
+    }
+
+    public function edit(Project $project): Response
+    {
+        $project->load(['category', 'tools']);
+        $categories = Category::orderBy('sort_order', 'asc')->get();
+        $tools = ToolStack::orderBy('sort_order', 'asc')->get();
+
+        return Inertia::render('Admin/Projects/Edit', [
+            'project' => $project,
+            'categories' => $categories,
+            'tools' => $tools,
+        ]);
+    }
+
+    public function update(Request $request, Project $project)
+    {
+        $validated = $request->validate([
+            'category_id' => ['required', 'exists:categories,id'],
+            'title' => ['required', 'string', 'max:200'],
+            'slug' => ['nullable', 'string', 'max:200', 'unique:projects,slug,' . $project->id],
+            'custom_badge' => ['nullable', 'string', 'max:50'],
+            'summary' => ['required', 'string', 'max:500'],
+            'description' => ['nullable', 'string'],
+            'problem_statement' => ['nullable', 'string'],
+            'solution' => ['nullable', 'string'],
+            'media_type' => ['required', 'in:image,video_embed,video_file'],
+            'video_url' => ['nullable', 'string', 'max:500'],
+            'thumbnail_file' => ['nullable', 'image', 'max:5120'],
+            'thumbnail_url' => ['nullable', 'string', 'max:500'],
+            'live_url' => ['nullable', 'string', 'max:500'],
+            'github_url' => ['nullable', 'string', 'max:500'],
+            'is_featured' => ['boolean'],
+            'sort_order' => ['integer'],
+            'tool_ids' => ['array'],
+            'tool_ids.*' => ['exists:tools_stacks,id'],
+        ]);
+
+        $thumbnailPath = $project->thumbnail_path;
+        if ($request->hasFile('thumbnail_file')) {
+            $path = $request->file('thumbnail_file')->store('thumbnails', 'public');
+            $thumbnailPath = '/storage/' . $path;
+        } elseif (isset($validated['thumbnail_url']) && !empty($validated['thumbnail_url'])) {
+            $thumbnailPath = $validated['thumbnail_url'];
+        }
+
+        $project->update([
+            'category_id' => $validated['category_id'],
+            'title' => $validated['title'],
+            'slug' => !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['title']),
+            'custom_badge' => $validated['custom_badge'] ?? null,
+            'summary' => $validated['summary'],
+            'description' => $validated['description'] ?? null,
+            'problem_statement' => $validated['problem_statement'] ?? null,
+            'solution' => $validated['solution'] ?? null,
+            'media_type' => $validated['media_type'],
+            'video_url' => $validated['video_url'] ?? null,
+            'thumbnail_path' => $thumbnailPath,
+            'live_url' => $validated['live_url'] ?? null,
+            'github_url' => $validated['github_url'] ?? null,
+            'is_featured' => $request->boolean('is_featured'),
+            'sort_order' => $validated['sort_order'] ?? 0,
+        ]);
+
+        if (isset($validated['tool_ids'])) {
+            $project->tools()->sync($validated['tool_ids']);
+        }
+
+        return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil diperbarui.');
+    }
+
+    public function destroy(Project $project)
+    {
+        $project->tools()->detach();
+        $project->delete();
+
+        return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil dihapus.');
+    }
+}
