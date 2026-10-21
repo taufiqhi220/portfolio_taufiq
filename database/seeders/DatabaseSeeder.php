@@ -19,10 +19,10 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Admin Account for Taufiq Hidayat
         $admin = User::firstOrCreate(
-            ['email' => 'taufiq@portfolio.test'],
+            ['email' => env('ADMIN_EMAIL', 'taufiq@portfolio.test')],
             [
-                'name' => 'Taufiq Hidayat',
-                'password' => Hash::make('password'),
+                'name' => env('ADMIN_NAME', 'Taufiq Hidayat'),
+                'password' => Hash::make(env('ADMIN_PASSWORD', 'password')),
                 'email_verified_at' => now(),
             ]
         );
