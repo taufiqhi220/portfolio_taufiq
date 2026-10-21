@@ -7,57 +7,123 @@ interface HeroProps {
 
 export default function Hero({ profile }: HeroProps) {
     return (
-        <section id="top" className="pt-32 pb-20 md:pt-40 md:pb-28 relative overflow-hidden">
-            {/* Ambient Accent Light (Subtle and intentional) */}
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+        <section id="top" className="pt-32 pb-16 md:pt-44 md:pb-24 border-b border-slate-900 relative">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+                    {/* Left Column: Personal Narrative */}
+                    <div className="lg:col-span-8">
+                        <div className="font-mono text-xs text-slate-500 uppercase tracking-widest mb-4">
+                            01 / Portofolio Pribadi
+                        </div>
 
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 text-center">
-                {/* Role Pill */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/80 text-slate-300 text-xs font-medium mb-6">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                    <span>{profile.headline || 'Web Developer & Video Editor'}</span>
-                </div>
+                        <h1 className="text-4xl sm:text-6xl md:text-7xl font-heading font-extrabold text-white tracking-tight leading-[1.08] mb-6">
+                            Taufiq Hidayat.
+                        </h1>
 
-                {/* Primary Heading */}
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-extrabold text-white tracking-tight leading-tight max-w-4xl mx-auto mb-6">
-                    Membangun Rekayasa Web yang Tangguh dan Cerita Visual yang Kuat.
-                </h1>
+                        <p className="text-xl sm:text-2xl font-heading text-slate-300 font-medium leading-snug max-w-2xl mb-6">
+                            Full-Stack Web Developer &amp; Creative Video Editor berbasis di Indonesia.
+                        </p>
 
-                {/* Authentic Bio Paragraph */}
-                <p className="text-base sm:text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-normal leading-relaxed mb-10">
-                    {profile.bio ||
-                        'Menggabungkan keahlian arsitektur web modern (Laravel, React, PostgreSQL) dengan sensibilitas sinematik multimedia (Premiere Pro, After Effects, DaVinci Resolve) untuk menghasilkan karya yang fungsional dan berkarakter.'}
-                </p>
+                        <p className="text-base sm:text-lg text-slate-400 font-normal leading-relaxed max-w-2xl mb-8">
+                            {profile.bio ||
+                                'Memadukan ketelitian arsitektur perangkat lunak modern (Laravel, React, PostgreSQL) dengan kepekaan ritme visual pascaproduksi multimedia (Premiere Pro, DaVinci Resolve, After Effects).'}
+                        </p>
 
-                {/* Direct Action Buttons (No dead links, 44px min tap target) */}
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <a
-                        href="#karya"
-                        className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-all shadow-lg shadow-blue-600/25 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    >
-                        Jelajahi Portofolio
-                    </a>
-                    <a
-                        href="#kontak"
-                        className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm border border-slate-700 hover:border-slate-600 transition-all focus:outline-none focus:ring-2 focus:ring-slate-400"
-                    >
-                        Hubungi Saya
-                    </a>
-                </div>
-
-                {/* Fast Facts / Discipline Badges */}
-                <div className="mt-14 pt-10 border-t border-slate-800/80 grid grid-cols-2 md:grid-cols-3 gap-6 max-w-3xl mx-auto text-left">
-                    <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
-                        <div className="text-cyan-400 font-heading font-bold text-lg mb-1">Web Development</div>
-                        <p className="text-xs text-slate-400">Full-Stack Application, Clean Architecture, REST API & Database.</p>
+                        {/* Direct Editorial Links */}
+                        <div className="flex flex-wrap items-center gap-4 text-sm">
+                            <a
+                                href="#karya"
+                                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-slate-950 font-semibold hover:bg-slate-200 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                            >
+                                <span>Lihat Karya Terpilih</span>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                                </svg>
+                            </a>
+                            <a
+                                href="#kontak"
+                                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 font-medium hover:bg-slate-800 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400"
+                            >
+                                <span>Mari Terhubung</span>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
+                        </div>
                     </div>
-                    <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
-                        <div className="text-blue-400 font-heading font-bold text-lg mb-1">Video & Motion</div>
-                        <p className="text-xs text-slate-400">Kinetic Typography, Sound Design, Color Grading & Teaser Promosi.</p>
-                    </div>
-                    <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 col-span-2 md:col-span-1">
-                        <div className="text-emerald-400 font-heading font-bold text-lg mb-1">Karya & Riset</div>
-                        <p className="text-xs text-slate-400">Studi Kasus Pemecahan Masalah, Eksperimen Tools, dan Proyek Terapan.</p>
+
+                    {/* Right Column: Studio Colophon & Practice Meta */}
+                    <div className="lg:col-span-4 lg:pl-6 space-y-6 text-xs text-slate-400 font-mono">
+                        <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800/80 space-y-4">
+                            <div>
+                                <span className="text-slate-500 block uppercase tracking-wider text-[10px] mb-1">
+                                    Wilayah &amp; Waktu
+                                </span>
+                                <span className="text-slate-200 font-medium text-sm">
+                                    {profile.location || 'Indonesia'} (WIB / UTC+7)
+                                </span>
+                            </div>
+
+                            <div className="pt-3 border-t border-slate-800">
+                                <span className="text-slate-500 block uppercase tracking-wider text-[10px] mb-1">
+                                    Fokus Bidang
+                                </span>
+                                <span className="text-slate-200 font-medium text-sm block">
+                                    Web Systems &amp; APIs
+                                </span>
+                                <span className="text-slate-200 font-medium text-sm block">
+                                    Video Editing &amp; Motion
+                                </span>
+                            </div>
+
+                            <div className="pt-3 border-t border-slate-800">
+                                <span className="text-slate-500 block uppercase tracking-wider text-[10px] mb-1">
+                                    Status Ketersediaan
+                                </span>
+                                {profile.is_available_for_work ? (
+                                    <span className="text-emerald-400 font-medium flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                        Terbuka untuk proyek baru
+                                    </span>
+                                ) : (
+                                    <span className="text-slate-400">Sedang fokus pada proyek aktif</span>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Social Links Minimal */}
+                        <div className="flex items-center gap-4 text-slate-400 text-xs">
+                            {profile.github_url && (
+                                <a
+                                    href={profile.github_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-white transition-colors underline underline-offset-4"
+                                >
+                                    GitHub
+                                </a>
+                            )}
+                            {profile.linkedin_url && (
+                                <a
+                                    href={profile.linkedin_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-white transition-colors underline underline-offset-4"
+                                >
+                                    LinkedIn
+                                </a>
+                            )}
+                            {profile.youtube_url && (
+                                <a
+                                    href={profile.youtube_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-white transition-colors underline underline-offset-4"
+                                >
+                                    YouTube
+                                </a>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

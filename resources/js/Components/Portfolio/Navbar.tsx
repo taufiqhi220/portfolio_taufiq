@@ -12,7 +12,7 @@ export default function Navbar({ profile }: NavbarProps) {
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
+            setScrolled(window.scrollY > 30);
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -32,63 +32,70 @@ export default function Navbar({ profile }: NavbarProps) {
         <header
             className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
                 scrolled
-                    ? 'bg-[#090d16]/90 backdrop-blur-md border-b border-slate-800/80 shadow-lg py-3'
-                    : 'bg-transparent py-5'
+                    ? 'bg-[#090d16]/95 backdrop-blur-md border-b border-slate-800/80 shadow-md py-4'
+                    : 'bg-transparent py-6'
             }`}
         >
             <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-                {/* Brand Logo / Identity */}
+                {/* Personal Identity */}
                 <a
                     href="#top"
-                    className="flex items-center gap-2.5 text-white font-heading font-bold text-lg tracking-tight group focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded px-1"
+                    className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded"
                 >
-                    <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-black text-sm shadow-sm group-hover:scale-105 transition-transform">
+                    <div className="w-8 h-8 rounded-md bg-slate-800 border border-slate-700/80 flex items-center justify-center text-xs font-heading font-black text-white group-hover:border-cyan-500 transition-colors">
                         TH
-                    </span>
-                    <span>{profile.full_name || 'Taufiq Hidayat'}</span>
+                    </div>
+                    <div>
+                        <span className="font-heading font-bold text-base text-white tracking-tight block">
+                            {profile.full_name || 'Taufiq Hidayat'}
+                        </span>
+                        <span className="text-[11px] font-mono text-slate-400 block -mt-0.5">
+                            Web &amp; Video Portfolio
+                        </span>
+                    </div>
                 </a>
 
-                {/* Desktop Navigation Links */}
+                {/* Editorial Desktop Navigation */}
                 <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
                     <a
                         href="#karya"
-                        className="hover:text-cyan-400 transition-colors focus:outline-none focus:text-cyan-400"
+                        className="hover:text-white transition-colors focus:outline-none focus:text-white"
                     >
-                        Karya & Proyek
+                        Karya Terpilih
                     </a>
                     <a
-                        href="#arsenal"
-                        className="hover:text-cyan-400 transition-colors focus:outline-none focus:text-cyan-400"
+                        href="#tentang"
+                        className="hover:text-white transition-colors focus:outline-none focus:text-white"
                     >
-                        Tools & Stack
+                        Tentang &amp; Toolkit
                     </a>
                     <a
                         href="#kontak"
-                        className="hover:text-cyan-400 transition-colors focus:outline-none focus:text-cyan-400"
+                        className="hover:text-white transition-colors focus:outline-none focus:text-white"
                     >
                         Kontak
                     </a>
 
                     {profile.is_available_for_work && (
-                        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs">
+                        <div className="flex items-center gap-2 pl-4 border-l border-slate-800 text-xs text-emerald-400">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span>Tersedia untuk Proyek</span>
+                            <span>Tersedia untuk proyek</span>
                         </div>
                     )}
 
                     <Link
                         href="/dashboard"
-                        className="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded border border-slate-700/60 hover:border-slate-500 transition-all focus:outline-none focus:ring-1 focus:ring-slate-400"
+                        className="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded border border-slate-800 hover:border-slate-600 transition-all focus:outline-none focus:ring-1 focus:ring-slate-400"
                     >
-                        Admin Portal
+                        Admin
                     </Link>
                 </nav>
 
-                {/* Mobile Menu Button (Accessible 44px tap target) */}
+                {/* Mobile Menu Trigger */}
                 <button
                     type="button"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    aria-label="Toggle menu navigasi"
+                    aria-label="Buka menu navigasi"
                     aria-expanded={mobileMenuOpen}
                     className="md:hidden flex items-center justify-center w-11 h-11 text-slate-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded-lg"
                 >
@@ -102,46 +109,44 @@ export default function Navbar({ profile }: NavbarProps) {
                 </button>
             </div>
 
-            {/* Mobile Drawer Menu */}
+            {/* Mobile Dropdown Menu */}
             {mobileMenuOpen && (
-                <div className="md:hidden bg-[#090d16] border-b border-slate-800 px-6 py-5 shadow-2xl animate-in slide-in-from-top-2 duration-200">
-                    <nav className="flex flex-col gap-4 text-base font-medium text-slate-200">
-                        <a
-                            href="#karya"
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="py-2 hover:text-cyan-400 transition-colors"
+                <div className="md:hidden bg-[#090d16] border-b border-slate-800 px-6 py-5 space-y-4">
+                    <a
+                        href="#karya"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-sm font-medium text-slate-200 hover:text-cyan-400"
+                    >
+                        Karya Terpilih
+                    </a>
+                    <a
+                        href="#tentang"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-sm font-medium text-slate-200 hover:text-cyan-400"
+                    >
+                        Tentang &amp; Toolkit
+                    </a>
+                    <a
+                        href="#kontak"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-sm font-medium text-slate-200 hover:text-cyan-400"
+                    >
+                        Kontak
+                    </a>
+                    <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                        <Link
+                            href="/dashboard"
+                            className="text-xs text-slate-400 hover:text-white"
                         >
-                            Karya & Proyek
-                        </a>
-                        <a
-                            href="#arsenal"
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="py-2 hover:text-cyan-400 transition-colors"
-                        >
-                            Tools & Stack
-                        </a>
-                        <a
-                            href="#kontak"
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="py-2 hover:text-cyan-400 transition-colors"
-                        >
-                            Kontak
-                        </a>
-                        <div className="pt-2 border-t border-slate-800 flex justify-between items-center">
-                            {profile.is_available_for_work && (
-                                <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                                    Tersedia untuk Proyek
-                                </span>
-                            )}
-                            <Link
-                                href="/dashboard"
-                                className="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded border border-slate-700"
-                            >
-                                Admin Login
-                            </Link>
-                        </div>
-                    </nav>
+                            Portal Admin
+                        </Link>
+                        {profile.is_available_for_work && (
+                            <span className="text-xs text-emerald-400 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                Tersedia untuk proyek
+                            </span>
+                        )}
+                    </div>
                 </div>
             )}
         </header>
