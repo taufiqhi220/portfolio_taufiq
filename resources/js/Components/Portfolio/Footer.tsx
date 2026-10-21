@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from '@inertiajs/react';
 import { Profile } from '@/types/portfolio';
 
 interface FooterProps {
@@ -9,22 +10,27 @@ export default function Footer({ profile }: FooterProps) {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="border-t border-slate-900 bg-[#060910] py-12 text-slate-500 font-mono text-xs">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <footer className="border-t border-stone-200/30 bg-transparent py-12 text-stone-500 font-mono text-xs">
+            <div className="max-w-5xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
-                    <span className="text-slate-300 font-bold font-heading text-sm">
+                    <span className="text-stone-900 font-bold font-heading text-sm">
                         {profile.full_name || 'Taufiq Hidayat'}
                     </span>
-                    <span className="text-slate-500 ml-2">
+                    <span className="text-stone-500 ml-2">
                         &copy; {currentYear}. Hak cipta dilindungi.
                     </span>
                 </div>
 
-                <div className="flex items-center gap-6 text-slate-400">
-                    <span>Dirancang dengan kesederhanaan &amp; presisi.</span>
+                <div className="flex items-center gap-6 text-stone-600">
+                    <Link
+                        href={route('login')}
+                        className="hover:text-stone-950 transition-colors underline underline-offset-4"
+                    >
+                        Admin Panel
+                    </Link>
                     <a
                         href="#top"
-                        className="hover:text-white transition-colors underline underline-offset-4"
+                        className="hover:text-stone-950 transition-colors underline underline-offset-4"
                     >
                         Ke Atas &uarr;
                     </a>

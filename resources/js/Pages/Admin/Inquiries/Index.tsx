@@ -32,10 +32,10 @@ export default function InquiriesIndex({ inquiries }: InquiriesIndexProps) {
         <AuthenticatedLayout
             header={
                 <div>
-                    <h2 className="text-xl font-bold leading-tight text-gray-800">
+                    <h2 className="text-xl font-bold leading-tight text-stone-900 font-serif">
                         Kotak Masuk Pesan Kontak ({inquiries.length})
                     </h2>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-stone-500 mt-1 font-mono">
                         Daftar pesan dan tawaran kerja sama yang dikirimkan pengunjung website.
                     </p>
                 </div>
@@ -50,27 +50,27 @@ export default function InquiriesIndex({ inquiries }: InquiriesIndexProps) {
                             inquiries.map((inq) => (
                                 <div
                                     key={inq.id}
-                                    className={`p-6 rounded-xl border transition-all ${
+                                    className={`p-6 rounded-2xl border transition-all ${
                                         inq.is_read
-                                            ? 'bg-white border-gray-100 shadow-sm opacity-90'
-                                            : 'bg-blue-50/40 border-blue-200 shadow-md ring-1 ring-blue-100'
+                                            ? 'bg-white border-stone-200/80 shadow-xs opacity-90'
+                                            : 'bg-amber-50/40 border-amber-200/90 shadow-sm ring-1 ring-amber-200/60'
                                     }`}
                                 >
                                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                                         <div className="flex items-center gap-3">
                                             <span
                                                 className={`w-2.5 h-2.5 rounded-full ${
-                                                    inq.is_read ? 'bg-gray-300' : 'bg-blue-600 animate-pulse'
+                                                    inq.is_read ? 'bg-stone-300' : 'bg-amber-600 animate-pulse'
                                                 }`}
                                             />
-                                            <h3 className="font-bold text-gray-900 text-base">{inq.name}</h3>
-                                            <span className="text-xs text-gray-500">&lt;{inq.email}&gt;</span>
+                                            <h3 className="font-bold text-stone-900 text-base">{inq.name}</h3>
+                                            <span className="text-xs text-stone-500 font-mono">&lt;{inq.email}&gt;</span>
                                         </div>
 
-                                        <div className="flex items-center gap-3 text-xs text-gray-400">
+                                        <div className="flex items-center gap-3 text-xs text-stone-400 font-mono">
                                             <span>{new Date(inq.created_at).toLocaleString('id-ID')}</span>
                                             {inq.ip_address && (
-                                                <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-500 text-[10px]">
+                                                <span className="px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 text-[10px] font-mono border border-stone-200">
                                                     IP: {inq.ip_address}
                                                 </span>
                                             )}
@@ -78,19 +78,19 @@ export default function InquiriesIndex({ inquiries }: InquiriesIndexProps) {
                                     </div>
 
                                     <div className="mb-4">
-                                        <div className="inline-block px-2.5 py-0.5 rounded-md bg-gray-100 text-gray-800 text-xs font-semibold mb-2">
+                                        <div className="inline-block px-3 py-1 rounded-full bg-stone-100 text-stone-800 text-xs font-mono font-semibold mb-2 border border-stone-200">
                                             Topik: {inq.subject}
                                         </div>
-                                        <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap bg-white p-4 rounded-lg border border-gray-100">
+                                        <p className="text-sm text-stone-800 leading-relaxed whitespace-pre-wrap bg-stone-50/60 p-4 rounded-xl border border-stone-200/70 font-sans">
                                             {inq.message}
                                         </p>
                                     </div>
 
-                                    <div className="flex items-center justify-between pt-3 border-t border-gray-100/80 text-xs">
+                                    <div className="flex items-center justify-between pt-3 border-t border-stone-100 text-xs font-mono">
                                         <div className="flex items-center gap-2">
                                             <a
                                                 href={`mailto:${inq.email}?subject=Re: ${encodeURIComponent(inq.subject)}`}
-                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors"
+                                                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-stone-950 hover:bg-stone-850 text-white font-medium transition-colors shadow-xs"
                                             >
                                                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
@@ -101,7 +101,7 @@ export default function InquiriesIndex({ inquiries }: InquiriesIndexProps) {
                                             <button
                                                 type="button"
                                                 onClick={() => toggleRead(inq.id)}
-                                                className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition-colors"
+                                                className="px-3.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium transition-colors border border-stone-200"
                                             >
                                                 {inq.is_read ? 'Tandai Belum Dibaca' : 'Tandai Sudah Dibaca'}
                                             </button>
@@ -110,7 +110,7 @@ export default function InquiriesIndex({ inquiries }: InquiriesIndexProps) {
                                         <button
                                             type="button"
                                             onClick={() => handleDelete(inq)}
-                                            className="px-2.5 py-1 text-rose-600 hover:bg-rose-50 rounded font-medium transition-colors"
+                                            className="px-3 py-1.5 text-rose-700 hover:bg-rose-50 rounded-xl font-medium transition-colors border border-transparent hover:border-rose-200"
                                         >
                                             Hapus Pesan
                                         </button>
@@ -118,7 +118,7 @@ export default function InquiriesIndex({ inquiries }: InquiriesIndexProps) {
                                 </div>
                             ))
                         ) : (
-                            <div className="p-12 text-center bg-white rounded-xl border border-gray-100 text-gray-500 text-sm">
+                            <div className="p-12 text-center bg-white rounded-2xl border border-stone-200/80 text-stone-500 text-sm font-mono">
                                 Kotak masuk kosong. Belum ada pesan dari formulir kontak website.
                             </div>
                         )}

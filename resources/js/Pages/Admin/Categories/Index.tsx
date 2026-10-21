@@ -74,11 +74,11 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
         <AuthenticatedLayout
             header={
                 <div>
-                    <h2 className="text-xl font-bold leading-tight text-gray-800">
+                    <h2 className="text-xl font-bold leading-tight text-stone-900 font-serif">
                         Manajemen Kategori Portofolio Dinamis
                     </h2>
-                    <p className="text-xs text-gray-500 mt-1">
-                        Tambah kategori baru secara fleksibel kapan saja (Web Dev, Video, Riset Akademik, Freelance, dll.).
+                    <p className="text-xs text-stone-500 mt-1 font-mono">
+                        Tambah atau sesuaikan tab kategori portofolio (Web Dev, Video, Riset Akademik, Freelance).
                     </p>
                 </div>
             }
@@ -89,42 +89,45 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
                     {/* Left Column: List of Categories */}
                     <div className="lg:col-span-7">
-                        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                            <div className="p-4 border-b border-gray-100">
-                                <h3 className="font-bold text-gray-900 text-sm">
+                        <div className="bg-white rounded-2xl border border-stone-200/80 shadow-sm overflow-hidden">
+                            <div className="p-4 sm:p-5 border-b border-stone-100 flex items-center justify-between">
+                                <h3 className="font-mono font-bold text-stone-900 text-xs uppercase tracking-wider">
                                     Daftar Kategori Aktif ({categories.length})
                                 </h3>
+                                <span className="font-mono text-[10px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                                    Sinkronisasi Dinamis
+                                </span>
                             </div>
-                            <div className="divide-y divide-gray-100">
+                            <div className="divide-y divide-stone-100">
                                 {categories.map((c) => (
-                                    <div key={c.id} className="p-4 hover:bg-gray-50 flex items-center justify-between">
+                                    <div key={c.id} className="p-4 sm:p-5 hover:bg-stone-50/70 transition-colors flex items-center justify-between gap-4">
                                         <div>
                                             <div className="flex items-center gap-2">
-                                                <h4 className="font-semibold text-gray-900 text-sm">{c.name}</h4>
-                                                <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-50 text-blue-700">
+                                                <h4 className="font-semibold text-stone-900 text-sm">{c.name}</h4>
+                                                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium uppercase bg-stone-100 text-stone-700 border border-stone-200">
                                                     Mode: {c.display_mode}
                                                 </span>
                                             </div>
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                Slug: <code className="text-gray-700">#{c.slug}</code> &bull; Urutan: {c.sort_order} &bull; Proyek: {c.projects_count ?? 0}
+                                            <p className="text-xs text-stone-500 mt-1 font-mono">
+                                                Slug: <code className="text-amber-800 font-bold">#{c.slug}</code> &bull; Urutan: {c.sort_order} &bull; Proyek: {c.projects_count ?? 0}
                                             </p>
                                             {c.description && (
-                                                <p className="text-xs text-gray-400 mt-0.5">{c.description}</p>
+                                                <p className="text-xs text-stone-500 mt-1 italic">{c.description}</p>
                                             )}
                                         </div>
 
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 shrink-0">
                                             <button
                                                 type="button"
                                                 onClick={() => startEditing(c)}
-                                                className="px-2.5 py-1 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded hover:bg-gray-50"
+                                                className="px-3 py-1.5 text-xs font-mono font-medium text-stone-700 bg-white border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors"
                                             >
                                                 Edit
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={() => handleDelete(c)}
-                                                className="px-2.5 py-1 text-xs font-medium text-rose-600 bg-rose-50 border border-rose-100 rounded hover:bg-rose-100"
+                                                className="px-3 py-1.5 text-xs font-mono font-medium text-rose-700 bg-rose-50 border border-rose-200 rounded-xl hover:bg-rose-100 transition-colors"
                                             >
                                                 Hapus
                                             </button>
@@ -137,14 +140,14 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
 
                     {/* Right Column: Add or Edit Category Form */}
                     <div className="lg:col-span-5">
-                        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-                            <h3 className="font-bold text-gray-900 text-sm mb-4">
+                        <div className="bg-white rounded-2xl border border-stone-200/80 shadow-sm p-6">
+                            <h3 className="font-mono font-bold text-stone-900 text-xs uppercase tracking-wider mb-4 pb-3 border-b border-stone-100">
                                 {editingCategory ? `Edit Kategori: ${editingCategory.name}` : 'Tambah Kategori Baru'}
                             </h3>
 
                             <form onSubmit={editingCategory ? handleUpdate : handleCreate} className="space-y-4">
                                 <div>
-                                    <label className="block text-xs font-bold uppercase text-gray-700 tracking-wider mb-1">
+                                    <label className="block text-xs font-mono font-semibold uppercase text-stone-700 tracking-wider mb-1">
                                         Nama Kategori *
                                     </label>
                                     <input
@@ -156,8 +159,8 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
                                                 ? editForm.setData('name', e.target.value)
                                                 : createForm.setData('name', e.target.value)
                                         }
-                                        placeholder="Contoh: Video Editing, Studi Kasus, Riset"
-                                        className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        placeholder="Contoh: Video Editing, Riset"
+                                        className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                                     />
                                     {editingCategory
                                         ? editForm.errors.name && <p className="text-xs text-rose-500 mt-1">{editForm.errors.name}</p>
@@ -165,7 +168,7 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-bold uppercase text-gray-700 tracking-wider mb-1">
+                                    <label className="block text-xs font-mono font-semibold uppercase text-stone-700 tracking-wider mb-1">
                                         Slug Filter (Opsional)
                                     </label>
                                     <input
@@ -177,12 +180,12 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
                                                 : createForm.setData('slug', e.target.value)
                                         }
                                         placeholder="Dibuat otomatis dari nama jika kosong"
-                                        className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-bold uppercase text-gray-700 tracking-wider mb-1">
+                                    <label className="block text-xs font-mono font-semibold uppercase text-stone-700 tracking-wider mb-1">
                                         Mode Tampilan Kartu di Frontend *
                                     </label>
                                     <select
@@ -193,16 +196,16 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
                                                 ? editForm.setData('display_mode', val)
                                                 : createForm.setData('display_mode', val);
                                         }}
-                                        className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                                     >
-                                        <option value="web">Web &amp; Software (Fokus live demo &amp; GitHub)</option>
-                                        <option value="video">Video &amp; Motion (Fokus play video pop-up)</option>
-                                        <option value="case_study">Studi Kasus / Riset (Fokus problem statement &amp; solusi)</option>
+                                        <option value="web">Web &amp; Software (Live demo &amp; GitHub)</option>
+                                        <option value="video">Video &amp; Motion (Play video pop-up)</option>
+                                        <option value="case_study">Studi Kasus / Riset (Problem statement &amp; solusi)</option>
                                     </select>
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-bold uppercase text-gray-700 tracking-wider mb-1">
+                                    <label className="block text-xs font-mono font-semibold uppercase text-stone-700 tracking-wider mb-1">
                                         Keterangan Singkat
                                     </label>
                                     <input
@@ -214,12 +217,12 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
                                                 : createForm.setData('description', e.target.value)
                                         }
                                         placeholder="Deskripsi singkat kategori ini"
-                                        className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-bold uppercase text-gray-700 tracking-wider mb-1">
+                                    <label className="block text-xs font-mono font-semibold uppercase text-stone-700 tracking-wider mb-1">
                                         Nomor Urutan Tab Filter
                                     </label>
                                     <input
@@ -231,7 +234,7 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
                                                 ? editForm.setData('sort_order', val)
                                                 : createForm.setData('sort_order', val);
                                         }}
-                                        className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                                     />
                                 </div>
 
@@ -239,16 +242,16 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
                                     <button
                                         type="submit"
                                         disabled={editingCategory ? editForm.processing : createForm.processing}
-                                        className="flex-1 py-2 px-4 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs uppercase tracking-wider shadow-sm transition-all disabled:opacity-50"
+                                        className="flex-1 py-2.5 px-4 rounded-xl bg-stone-950 hover:bg-stone-850 text-white font-mono font-medium text-xs tracking-wider shadow-sm transition-all disabled:opacity-50"
                                     >
-                                        {editingCategory ? 'Perbarui Kategori' : 'Simpan Kategori Baru'}
+                                        {editingCategory ? 'SIMPAN PERUBAHAN' : 'TAMBAH KATEGORI'}
                                     </button>
 
                                     {editingCategory && (
                                         <button
                                             type="button"
                                             onClick={() => setEditingCategory(null)}
-                                            className="py-2 px-3 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium"
+                                            className="py-2.5 px-4 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-mono font-medium transition-colors"
                                         >
                                             Batal
                                         </button>

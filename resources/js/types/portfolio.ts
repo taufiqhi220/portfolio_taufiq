@@ -14,7 +14,9 @@ export interface ToolStack {
     slug: string;
     group_type: 'creative_software' | 'web_stack' | 'general_tools';
     icon_name?: string;
+    icon_url?: string | null;
     sort_order: number;
+    projects_count?: number;
 }
 
 export interface Project {

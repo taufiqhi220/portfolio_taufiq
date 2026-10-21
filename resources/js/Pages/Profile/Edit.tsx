@@ -12,16 +12,21 @@ export default function Edit({
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Profile
-                </h2>
+                <div>
+                    <h2 className="text-xl font-bold leading-tight text-stone-900 font-serif">
+                        Akun Administrator Studio
+                    </h2>
+                    <p className="text-xs text-stone-500 mt-1 font-mono">
+                        Perbarui kredensial login, kata sandi, dan keamanan sesi admin.
+                    </p>
+                </div>
             }
         >
-            <Head title="Profile" />
+            <Head title="Pengaturan Akun Admin" />
 
-            <div className="py-12">
+            <div className="py-8">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                    <div className="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200/80 shadow-sm">
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
@@ -29,11 +34,11 @@ export default function Edit({
                         />
                     </div>
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                    <div className="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200/80 shadow-sm">
                         <UpdatePasswordForm className="max-w-xl" />
                     </div>
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                    <div className="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200/80 shadow-sm">
                         <DeleteUserForm className="max-w-xl" />
                     </div>
                 </div>

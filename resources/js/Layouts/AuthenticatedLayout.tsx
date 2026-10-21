@@ -1,4 +1,3 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
@@ -10,23 +9,32 @@ export default function Authenticated({
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
-
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
+        <div className="min-h-screen bg-[#FAF8F5] text-stone-900 font-sans antialiased">
+            {/* Top Navigation Bar */}
+            <nav className="border-b border-stone-200/80 bg-white/90 backdrop-blur-md sticky top-0 z-30">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
+                    <div className="flex h-16 justify-between items-center">
+                        <div className="flex items-center gap-8">
+                            {/* Brand Header */}
+                            <Link href="/" className="flex items-center gap-2.5 focus:outline-none">
+                                <span className="w-8 h-8 rounded-lg bg-stone-950 text-stone-50 font-mono font-bold flex items-center justify-center text-xs shadow-xs">
+                                    TH
+                                </span>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-heading font-extrabold text-stone-900 text-base tracking-tight">
+                                        Taufiq Hidayat
+                                    </span>
+                                    <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-amber-100/80 text-amber-950 font-bold border border-amber-300/60 uppercase tracking-wider">
+                                        Studio Admin
+                                    </span>
+                                </div>
+                            </Link>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            {/* Desktop Nav Items */}
+                            <div className="hidden space-x-7 sm:-my-px sm:flex items-center text-xs font-mono">
                                 <NavLink
                                     href={route('dashboard')}
                                     active={route().current('dashboard')}
@@ -46,106 +54,92 @@ export default function Authenticated({
                                     Kategori
                                 </NavLink>
                                 <NavLink
+                                    href={route('admin.tools.index')}
+                                    active={route().current('admin.tools.*')}
+                                >
+                                    Tech Stack
+                                </NavLink>
+                                <NavLink
                                     href={route('admin.inquiries.index')}
                                     active={route().current('admin.inquiries.*')}
                                 >
                                     Pesan Masuk
                                 </NavLink>
-                                <a
-                                    href={route('home')}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 transition duration-150 ease-in-out gap-1"
+                                <NavLink
+                                    href={route('admin.profileSettings.edit')}
+                                    active={route().current('admin.profileSettings.*')}
                                 >
-                                    <span>Lihat Website</span>
-                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                    </svg>
-                                </a>
+                                    Profil Portofolio
+                                </NavLink>
                             </div>
                         </div>
 
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
+                        <div className="hidden sm:flex sm:items-center sm:gap-4">
+                            {/* Public Website External Trigger */}
+                            <a
+                                href={route('home')}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200/80 text-stone-700 hover:text-stone-950 text-xs font-mono transition-colors border border-stone-200/60"
+                            >
+                                <span>Lihat Web Utama</span>
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </a>
+
+                            {/* User Menu Dropdown */}
+                            <div className="relative">
                                 <Dropdown>
                                     <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                        <button
+                                            type="button"
+                                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-stone-200 bg-white text-xs font-mono font-medium text-stone-700 hover:bg-stone-50 transition-colors cursor-pointer shadow-2xs"
+                                        >
+                                            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                                            <span>{user.name}</span>
+                                            <svg
+                                                className="h-3.5 w-3.5 text-stone-400"
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
                                             >
-                                                {user.name}
-
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                        </button>
                                     </Dropdown.Trigger>
 
                                     <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
+                                        <Dropdown.Link href={route('profile.edit')}>
+                                            Keamanan Akun
                                         </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route('logout')}
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            Keluar (Log Out)
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
                             </div>
                         </div>
 
+                        {/* Mobile Hamburger Toggle */}
                         <div className="-me-2 flex items-center sm:hidden">
                             <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+                                onClick={() => setShowingNavigationDropdown((prev) => !prev)}
+                                className="inline-flex items-center justify-center rounded-lg p-2 text-stone-600 hover:bg-stone-100 hover:text-stone-900 focus:outline-none"
                             >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
+                                <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                         strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
+                                        d={showingNavigationDropdown ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
                                     />
                                 </svg>
                             </button>
@@ -153,77 +147,58 @@ export default function Authenticated({
                     </div>
                 </div>
 
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
+                {/* Mobile Dropdown Nav */}
+                <div className={`${showingNavigationDropdown ? 'block' : 'hidden'} sm:hidden border-t border-stone-200 bg-white`}>
                     <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
+                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('admin.projects.index')}
-                            active={route().current('admin.projects.*')}
-                        >
+                        <ResponsiveNavLink href={route('admin.projects.index')} active={route().current('admin.projects.*')}>
                             Proyek
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('admin.categories.index')}
-                            active={route().current('admin.categories.*')}
-                        >
+                        <ResponsiveNavLink href={route('admin.categories.index')} active={route().current('admin.categories.*')}>
                             Kategori
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('admin.inquiries.index')}
-                            active={route().current('admin.inquiries.*')}
-                        >
+                        <ResponsiveNavLink href={route('admin.tools.index')} active={route().current('admin.tools.*')}>
+                            Tech Stack
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('admin.inquiries.index')} active={route().current('admin.inquiries.*')}>
                             Pesan Masuk
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('admin.profileSettings.edit')} active={route().current('admin.profileSettings.*')}>
+                            Profil Portofolio
+                        </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('home')}>
-                            Lihat Website
+                            Lihat Web Utama
                         </ResponsiveNavLink>
                     </div>
 
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
+                    <div className="border-t border-stone-200 pb-3 pt-4 px-4">
+                        <div className="text-sm font-semibold text-stone-900">{user.name}</div>
+                        <div className="text-xs font-mono text-stone-500 mb-3">{user.email}</div>
+                        <div className="space-y-1">
                             <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
+                                Keamanan Akun
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
+                            <ResponsiveNavLink method="post" href={route('logout')} as="button">
+                                Keluar (Log Out)
                             </ResponsiveNavLink>
                         </div>
                     </div>
                 </div>
             </nav>
 
+            {/* Header Title Section */}
             {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <header className="bg-white/80 border-b border-stone-200/80">
+                    <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
                         {header}
                     </div>
                 </header>
             )}
 
-            <main>{children}</main>
+            {/* Main Page Canvas */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">{children}</main>
         </div>
     );
 }

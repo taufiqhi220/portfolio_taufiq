@@ -9,6 +9,8 @@ import ContactForm from '@/Components/Portfolio/ContactForm';
 import Footer from '@/Components/Portfolio/Footer';
 import VideoPlayerModal from '@/Components/Portfolio/VideoPlayerModal';
 import ProjectDetailModal from '@/Components/Portfolio/ProjectDetailModal';
+import FluidBackground from '@/Components/Portfolio/FluidBackground';
+import MarqueeTicker from '@/Components/Portfolio/MarqueeTicker';
 
 interface WelcomeProps {
     profile: Profile;
@@ -24,7 +26,7 @@ interface WelcomeProps {
     };
 }
 
-export default function Welcome({ profile, categories, projects, tools }: WelcomeProps) {
+export default function Welcome({ profile, categories, projects, tools, auth }: WelcomeProps) {
     const [activeVideoProject, setActiveVideoProject] = useState<Project | null>(null);
     const [activeDetailProject, setActiveDetailProject] = useState<Project | null>(null);
 
@@ -45,13 +47,24 @@ export default function Welcome({ profile, categories, projects, tools }: Welcom
                 />
             </Head>
 
-            <div className="min-h-screen bg-[#090d16] text-slate-100 selection:bg-cyan-500 selection:text-white font-sans antialiased">
-                {/* Fixed Top Navigation Bar */}
-                <Navbar profile={profile} />
+            <div className="min-h-screen bg-transparent text-stone-900 selection:bg-amber-100 selection:text-amber-900 font-sans antialiased relative">
+                {/* Dynamic Fluid Organic Waves Background */}
+                <FluidBackground />
 
-                <main>
-                    {/* Hero Section */}
-                    <Hero profile={profile} />
+                {/* Fixed Top Navigation Bar */}
+                <Navbar profile={profile} auth={auth} />
+
+                <main className="relative z-10">
+                    {/* Hero Section with Interactive Featured Showcase */}
+                    <Hero
+                        profile={profile}
+                        projects={projects}
+                        onPlayVideo={(project) => setActiveVideoProject(project)}
+                        onViewDetail={(project) => setActiveDetailProject(project)}
+                    />
+
+                    {/* Continuous Competency Marquee Ticker */}
+                    <MarqueeTicker />
 
                     {/* Dynamic Segmented Portfolio (Web, Video, Research, Experiments) */}
                     <SegmentedPortfolio
@@ -62,7 +75,7 @@ export default function Welcome({ profile, categories, projects, tools }: Welcom
                     />
 
                     {/* Tools, Software & Tech Stack Section */}
-                    <ToolsArsenal tools={tools} />
+                    <ToolsArsenal tools={tools} profile={profile} />
 
                     {/* Contact Form Section */}
                     <ContactForm profile={profile} />

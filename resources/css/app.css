@@ -4,30 +4,227 @@
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
 
-    /* Anti-Slop R-29: Palette Restraint (2-3 Core + 1 Accent) */
-    --color-surface-bg: #090d16;
-    --color-surface-card: #0f172a;
-    --color-surface-card-hover: #1e293b;
-    --color-surface-border: #1e293b;
-
-    --color-brand-primary: #3b82f6;
-    --color-brand-primary-hover: #2563eb;
-    --color-brand-accent: #06b6d4;
-
-    --color-text-main: #f8fafc;
-    --color-text-muted: #94a3b8;
-    --color-text-subtle: #64748b;
+    --color-bg: #FAF8F5;
+    --color-surface: #FFFFFF;
+    --color-text: #1C1917;
+    --color-text-secondary: #78716C;
+    --color-border: #E7E5E4;
+    --color-accent: #B45309;
+    --color-accent-hover: #92400E;
 }
 
-/* Custom Base Styles */
 html {
     scroll-behavior: smooth;
-    background-color: var(--color-surface-bg, #090d16);
-    color: var(--color-text-main, #f8fafc);
+    background-color: var(--color-bg);
+    color: var(--color-text);
 }
 
 body {
     min-height: 100vh;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    background-color: #FAF8F5;
 }
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #FAF8F5;
+}
+::-webkit-scrollbar-thumb {
+    background: #D6D3D1;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #A8A29E;
+}
+
+/* Consistent Circular Ambient Glow Drifts (Preserves Perfect Circles / Planetary Spheres) */
+@keyframes circular-drift-1 {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+        transform: translate3d(50px, -40px, 0) scale(1.08);
+    }
+}
+
+@keyframes circular-drift-2 {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+        transform: translate3d(-60px, 45px, 0) scale(1.06);
+    }
+}
+
+@keyframes circular-drift-3 {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+        transform: translate3d(40px, 50px, 0) scale(1.05);
+    }
+}
+
+.animate-circular-drift-1 {
+    animation: circular-drift-1 16s ease-in-out infinite;
+    will-change: transform;
+}
+
+.animate-circular-drift-2 {
+    animation: circular-drift-2 20s ease-in-out infinite reverse;
+    will-change: transform;
+}
+
+.animate-circular-drift-3 {
+    animation: circular-drift-3 18s ease-in-out infinite;
+    will-change: transform;
+}
+
+/* Continuous Infinite Marquee Ticker */
+@keyframes marquee {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
+.animate-marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+    animation-play-state: paused;
+}
+
+/* Floating Elements */
+@keyframes float-gentle {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-8px) rotate(0.5deg);
+    }
+}
+
+@keyframes float-delayed {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(-0.5deg);
+    }
+}
+
+.animate-float-gentle {
+    animation: float-gentle 5s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+    animation: float-delayed 6s ease-in-out infinite 1.5s;
+}
+
+/* Sound Wave Equalizer Bars for Video Projects */
+@keyframes eq-bar-1 {
+    0%, 100% { height: 25%; }
+    50% { height: 95%; }
+}
+@keyframes eq-bar-2 {
+    0%, 100% { height: 75%; }
+    50% { height: 35%; }
+}
+@keyframes eq-bar-3 {
+    0%, 100% { height: 40%; }
+    50% { height: 100%; }
+}
+@keyframes eq-bar-4 {
+    0%, 100% { height: 90%; }
+    50% { height: 20%; }
+}
+@keyframes eq-bar-5 {
+    0%, 100% { height: 50%; }
+    50% { height: 85%; }
+}
+
+.animate-eq-1 { animation: eq-bar-1 0.85s ease-in-out infinite; }
+.animate-eq-2 { animation: eq-bar-2 0.7s ease-in-out infinite; }
+.animate-eq-3 { animation: eq-bar-3 0.95s ease-in-out infinite; }
+.animate-eq-4 { animation: eq-bar-4 0.65s ease-in-out infinite; }
+.animate-eq-5 { animation: eq-bar-5 0.8s ease-in-out infinite; }
+
+/* Concentric Ripple Waves */
+@keyframes ripple-ping {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+}
+
+.animate-ripple-ping {
+    animation: ripple-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Orbit Rotations */
+@keyframes orbit-slow {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes orbit-reverse-slow {
+    from {
+        transform: rotate(360deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+.animate-orbit-slow {
+    animation: orbit-slow 90s linear infinite;
+}
+
+.animate-orbit-reverse-slow {
+    animation: orbit-reverse-slow 120s linear infinite;
+}
+
+/* Shimmer Sweep */
+@keyframes shimmer-sweep {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(200%);
+    }
+}
+
+.animate-shimmer-sweep {
+    animation: shimmer-sweep 3s ease-in-out infinite;
+}
+
+/* Terminal Cursor Blink */
+@keyframes cursor-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+.animate-cursor-blink {
+    animation: cursor-blink 1s infinite;
+}
+
+

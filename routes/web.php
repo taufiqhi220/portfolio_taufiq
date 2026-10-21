@@ -20,11 +20,16 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('projects', ProjectController::class);
         Route::resource('categories', CategoryController::class)->except(['create', 'show', 'edit']);
+        Route::resource('tools', \App\Http\Controllers\Admin\ToolStackController::class)->except(['create', 'show', 'edit']);
 
         // Inquiries
         Route::get('inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
         Route::patch('inquiries/{inquiry}/toggle-read', [InquiryController::class, 'toggleRead'])->name('inquiries.toggleRead');
         Route::delete('inquiries/{inquiry}', [InquiryController::class, 'destroy'])->name('inquiries.destroy');
+
+        // Portfolio Profile Settings
+        Route::get('profile-settings', [\App\Http\Controllers\Admin\ProfileSettingController::class, 'edit'])->name('profileSettings.edit');
+        Route::put('profile-settings', [\App\Http\Controllers\Admin\ProfileSettingController::class, 'update'])->name('profileSettings.update');
     });
 
     // User Profile
