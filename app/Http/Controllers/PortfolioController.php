@@ -18,26 +18,36 @@ class PortfolioController extends Controller
      */
     public function index(): Response
     {
-        $profile = ProfileSetting::first() ?? new ProfileSetting([
+        $defaultProfile = new ProfileSetting([
             'full_name' => 'Taufiq Hidayat',
             'headline' => 'Full-Stack Web Developer & Creative Video Editor',
             'bio' => 'Memadukan ketelitian rekayasa perangkat lunak dengan kepekaan visual storytelling multimedia.',
             'is_available_for_work' => true,
         ]);
 
-        $categories = Category::where('is_active', true)
-            ->withCount('projects')
-            ->orderBy('sort_order', 'asc')
-            ->get();
+        try {
+            $profile = ProfileSetting::first() ?? $defaultProfile;
 
-        $projects = Project::with(['category', 'tools', 'images'])
-            ->orderBy('is_featured', 'desc')
-            ->orderBy('sort_order', 'asc')
-            ->get();
+            $categories = Category::where('is_active', true)
+                ->withCount('projects')
+                ->orderBy('sort_order', 'asc')
+                ->get();
 
-        $tools = ToolStack::orderBy('sort_order', 'asc')
-            ->get()
-            ->groupBy('group_type');
+            $projects = Project::with(['category', 'tools', 'images'])
+                ->orderBy('is_featured', 'desc')
+                ->orderBy('sort_order', 'asc')
+                ->get();
+
+            $tools = ToolStack::orderBy('sort_order', 'asc')
+                ->get()
+                ->groupBy('group_type');
+        } catch (\Throwable $e) {
+            report($e);
+            $profile = $defaultProfile;
+            $categories = collect([]);
+            $projects = collect([]);
+            $tools = collect([]);
+        }
 
         return Inertia::render('Welcome', [
             'profile' => $profile,
