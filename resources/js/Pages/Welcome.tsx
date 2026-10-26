@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head } from '@inertiajs/react';
 import { Category, Profile, Project, ToolStack } from '@/types/portfolio';
 import Navbar from '@/Components/Portfolio/Navbar';
@@ -30,6 +30,63 @@ export default function Welcome({ profile, categories, projects, tools, auth }: 
     const [activeVideoProject, setActiveVideoProject] = useState<Project | null>(null);
     const [activeDetailProject, setActiveDetailProject] = useState<Project | null>(null);
 
+    // Deep-link support: read ?project=slug on initial load
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const projectSlug = params.get('project');
+            if (projectSlug) {
+                const found = projects.find((p) => p.slug === projectSlug);
+                if (found) {
+                    if (found.media_type === 'video_embed' && params.get('play') === 'true') {
+                        setActiveVideoProject(found);
+                    } else {
+                        setActiveDetailProject(found);
+                    }
+                }
+            }
+        }
+    }, [projects]);
+
+    // Update browser URL query without reloading when modal changes
+    const handleOpenDetail = (project: Project) => {
+        setActiveDetailProject(project);
+        if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href);
+            url.searchParams.set('project', project.slug);
+            window.history.replaceState({}, '', url.toString());
+        }
+    };
+
+    const handleCloseDetail = () => {
+        setActiveDetailProject(null);
+        if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('project');
+            window.history.replaceState({}, '', url.toString());
+        }
+    };
+
+    const handleOpenVideo = (project: Project) => {
+        setActiveVideoProject(project);
+        if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href);
+            url.searchParams.set('project', project.slug);
+            url.searchParams.set('play', 'true');
+            window.history.replaceState({}, '', url.toString());
+        }
+    };
+
+    const handleCloseVideo = () => {
+        setActiveVideoProject(null);
+        if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('project');
+            url.searchParams.delete('play');
+            window.history.replaceState({}, '', url.toString());
+        }
+    };
+
     const pageTitle = profile?.full_name
         ? `${profile.full_name} | Web Developer & Video Editor`
         : 'Taufiq Hidayat | Portofolio';
@@ -59,8 +116,8 @@ export default function Welcome({ profile, categories, projects, tools, auth }: 
                     <Hero
                         profile={profile}
                         projects={projects}
-                        onPlayVideo={(project) => setActiveVideoProject(project)}
-                        onViewDetail={(project) => setActiveDetailProject(project)}
+                        onPlayVideo={handleOpenVideo}
+                        onViewDetail={handleOpenDetail}
                     />
 
                     {/* Continuous Competency Marquee Ticker */}
@@ -70,8 +127,8 @@ export default function Welcome({ profile, categories, projects, tools, auth }: 
                     <SegmentedPortfolio
                         categories={categories}
                         projects={projects}
-                        onPlayVideo={(project) => setActiveVideoProject(project)}
-                        onViewDetail={(project) => setActiveDetailProject(project)}
+                        onPlayVideo={handleOpenVideo}
+                        onViewDetail={handleOpenDetail}
                     />
 
                     {/* Tools, Software & Tech Stack Section */}
@@ -87,16 +144,16 @@ export default function Welcome({ profile, categories, projects, tools, auth }: 
                 {/* Interactive Video Player Modal (YouTube, Google Drive, Vimeo, MP4) */}
                 <VideoPlayerModal
                     project={activeVideoProject}
-                    onClose={() => setActiveVideoProject(null)}
+                    onClose={handleCloseVideo}
                 />
 
                 {/* Comprehensive Project Detail Case Study Modal */}
                 <ProjectDetailModal
                     project={activeDetailProject}
-                    onClose={() => setActiveDetailProject(null)}
+                    onClose={handleCloseDetail}
                     onPlayVideo={(project) => {
-                        setActiveDetailProject(null);
-                        setActiveVideoProject(project);
+                        handleCloseDetail();
+                        handleOpenVideo(project);
                     }}
                 />
             </div>

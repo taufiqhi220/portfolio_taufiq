@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Project;
+use App\Models\ProjectImage;
 use App\Models\ToolStack;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +17,7 @@ class ProjectController extends Controller
 {
     public function index(): Response
     {
-        $projects = Project::with(['category', 'tools'])
+        $projects = Project::with(['category', 'tools', 'images'])
             ->orderBy('sort_order', 'asc')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -54,17 +55,22 @@ class ProjectController extends Controller
             'thumbnail_url' => ['nullable', 'string', 'max:500'],
             'live_url' => ['nullable', 'string', 'max:500'],
             'github_url' => ['nullable', 'string', 'max:500'],
+            'extra_meta' => ['nullable', 'array'],
             'is_featured' => ['boolean'],
             'sort_order' => ['integer'],
             'tool_ids' => ['array'],
             'tool_ids.*' => ['exists:tools_stacks,id'],
+            'gallery_files' => ['nullable', 'array'],
+            'gallery_files.*' => ['nullable', 'image', 'max:5120'],
+            'gallery_urls' => ['nullable', 'array'],
+            'gallery_urls.*' => ['nullable', 'string', 'max:500'],
         ]);
 
         $slug = !empty($validated['slug'])
             ? Str::slug($validated['slug'])
             : Str::slug($validated['title']);
 
-        // Handle thumbnail upload or URL
+        // Handle thumbnail upload or direct URL
         $thumbnailPath = $validated['thumbnail_url'] ?? null;
         if ($request->hasFile('thumbnail_file')) {
             $path = $request->file('thumbnail_file')->store('thumbnails', 'public');
@@ -85,6 +91,7 @@ class ProjectController extends Controller
             'thumbnail_path' => $thumbnailPath,
             'live_url' => $validated['live_url'] ?? null,
             'github_url' => $validated['github_url'] ?? null,
+            'extra_meta' => $validated['extra_meta'] ?? null,
             'is_featured' => $request->boolean('is_featured'),
             'sort_order' => $validated['sort_order'] ?? 0,
         ]);
@@ -93,12 +100,40 @@ class ProjectController extends Controller
             $project->tools()->sync($validated['tool_ids']);
         }
 
+        // Process gallery image uploads
+        $imageOrder = 0;
+        if ($request->hasFile('gallery_files')) {
+            foreach ($request->file('gallery_files') as $file) {
+                if ($file && $file->isValid()) {
+                    $path = $file->store('gallery', 'public');
+                    ProjectImage::create([
+                        'project_id' => $project->id,
+                        'image_path' => '/storage/' . $path,
+                        'sort_order' => $imageOrder++,
+                    ]);
+                }
+            }
+        }
+
+        // Process direct gallery image URLs
+        if (!empty($validated['gallery_urls'])) {
+            foreach ($validated['gallery_urls'] as $url) {
+                if (!empty(trim($url))) {
+                    ProjectImage::create([
+                        'project_id' => $project->id,
+                        'image_path' => trim($url),
+                        'sort_order' => $imageOrder++,
+                    ]);
+                }
+            }
+        }
+
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil ditambahkan.');
     }
 
     public function edit(Project $project): Response
     {
-        $project->load(['category', 'tools']);
+        $project->load(['category', 'tools', 'images']);
         $categories = Category::orderBy('sort_order', 'asc')->get();
         $tools = ToolStack::orderBy('sort_order', 'asc')->get();
 
@@ -126,10 +161,17 @@ class ProjectController extends Controller
             'thumbnail_url' => ['nullable', 'string', 'max:500'],
             'live_url' => ['nullable', 'string', 'max:500'],
             'github_url' => ['nullable', 'string', 'max:500'],
+            'extra_meta' => ['nullable', 'array'],
             'is_featured' => ['boolean'],
             'sort_order' => ['integer'],
             'tool_ids' => ['array'],
             'tool_ids.*' => ['exists:tools_stacks,id'],
+            'gallery_files' => ['nullable', 'array'],
+            'gallery_files.*' => ['nullable', 'image', 'max:5120'],
+            'gallery_urls' => ['nullable', 'array'],
+            'gallery_urls.*' => ['nullable', 'string', 'max:500'],
+            'deleted_image_ids' => ['nullable', 'array'],
+            'deleted_image_ids.*' => ['integer'],
         ]);
 
         $thumbnailPath = $project->thumbnail_path;
@@ -154,6 +196,7 @@ class ProjectController extends Controller
             'thumbnail_path' => $thumbnailPath,
             'live_url' => $validated['live_url'] ?? null,
             'github_url' => $validated['github_url'] ?? null,
+            'extra_meta' => $validated['extra_meta'] ?? null,
             'is_featured' => $request->boolean('is_featured'),
             'sort_order' => $validated['sort_order'] ?? 0,
         ]);
@@ -162,12 +205,51 @@ class ProjectController extends Controller
             $project->tools()->sync($validated['tool_ids']);
         }
 
+        // Delete requested gallery images
+        if (!empty($validated['deleted_image_ids'])) {
+            ProjectImage::where('project_id', $project->id)
+                ->whereIn('id', $validated['deleted_image_ids'])
+                ->delete();
+        }
+
+        // Current max sort order for existing images
+        $maxOrder = $project->images()->max('sort_order') ?? 0;
+        $nextOrder = $maxOrder + 1;
+
+        // Process new gallery image uploads
+        if ($request->hasFile('gallery_files')) {
+            foreach ($request->file('gallery_files') as $file) {
+                if ($file && $file->isValid()) {
+                    $path = $file->store('gallery', 'public');
+                    ProjectImage::create([
+                        'project_id' => $project->id,
+                        'image_path' => '/storage/' . $path,
+                        'sort_order' => $nextOrder++,
+                    ]);
+                }
+            }
+        }
+
+        // Process new direct gallery URLs
+        if (!empty($validated['gallery_urls'])) {
+            foreach ($validated['gallery_urls'] as $url) {
+                if (!empty(trim($url))) {
+                    ProjectImage::create([
+                        'project_id' => $project->id,
+                        'image_path' => trim($url),
+                        'sort_order' => $nextOrder++,
+                    ]);
+                }
+            }
+        }
+
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil diperbarui.');
     }
 
     public function destroy(Project $project)
     {
         $project->tools()->detach();
+        $project->images()->delete();
         $project->delete();
 
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil dihapus.');

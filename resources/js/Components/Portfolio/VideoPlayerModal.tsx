@@ -34,6 +34,7 @@ export default function VideoPlayerModal({ project, onClose }: VideoPlayerModalP
 
     // Determine embed URL (fallback to video_url if embed_url not provided)
     const embedUrl = project.embed_url || project.video_url;
+    const isVertical = project.extra_meta?.aspect_ratio === '9:16';
 
     return (
         <div
@@ -48,7 +49,9 @@ export default function VideoPlayerModal({ project, onClose }: VideoPlayerModalP
             <div className="absolute inset-0" onClick={onClose} />
 
             <div
-                className={`relative z-10 w-full max-w-4xl bg-stone-900 border border-stone-800 rounded-2xl overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out transform ${
+                className={`relative z-10 w-full ${
+                    isVertical ? 'max-w-sm sm:max-w-md' : 'max-w-4xl'
+                } bg-stone-900 border border-stone-800 rounded-2xl overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out transform ${
                     animateIn ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
                 }`}
             >
@@ -56,7 +59,7 @@ export default function VideoPlayerModal({ project, onClose }: VideoPlayerModalP
                 <div className="flex items-center justify-between px-5 sm:px-6 py-3.5 sm:py-4 border-b border-stone-800 bg-stone-950/90">
                     <div className="min-w-0 pr-4">
                         <span className="text-[11px] font-semibold tracking-wider uppercase text-amber-500 font-mono block mb-0.5">
-                            {project.category?.name || 'Video Showcase'}
+                            {project.category?.name || 'Video Showcase'} {isVertical ? '(9:16 Vertikal)' : ''}
                         </span>
                         <h3 id="video-modal-title" className="text-base sm:text-lg font-heading font-bold text-stone-100 truncate">
                             {project.title}
@@ -75,8 +78,12 @@ export default function VideoPlayerModal({ project, onClose }: VideoPlayerModalP
                     </button>
                 </div>
 
-                {/* 16:9 Responsive Video Aspect Ratio Container */}
-                <div className="relative w-full aspect-video bg-black flex items-center justify-center">
+                {/* Adaptive Video Aspect Ratio Container (16:9 Landscape vs 9:16 Vertical) */}
+                <div
+                    className={`relative w-full ${
+                        isVertical ? 'aspect-[9/16] max-h-[70vh]' : 'aspect-video'
+                    } bg-black flex items-center justify-center`}
+                >
                     {embedUrl ? (
                         <iframe
                             src={embedUrl}

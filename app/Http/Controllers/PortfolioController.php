@@ -30,7 +30,7 @@ class PortfolioController extends Controller
             ->orderBy('sort_order', 'asc')
             ->get();
 
-        $projects = Project::with(['category', 'tools'])
+        $projects = Project::with(['category', 'tools', 'images'])
             ->orderBy('is_featured', 'desc')
             ->orderBy('sort_order', 'asc')
             ->get();

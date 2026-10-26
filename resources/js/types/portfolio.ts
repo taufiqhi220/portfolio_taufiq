@@ -19,6 +19,26 @@ export interface ToolStack {
     projects_count?: number;
 }
 
+export interface ProjectImage {
+    id: number;
+    project_id: number;
+    image_path: string;
+    caption?: string | null;
+    sort_order: number;
+}
+
+export interface ProjectMeta {
+    figma_url?: string;
+    docs_url?: string;
+    playstore_url?: string;
+    aspect_ratio?: '16:9' | '9:16';
+    client_name?: string;
+    completion_year?: string;
+    role?: string;
+    duration?: string;
+    [key: string]: any;
+}
+
 export interface Project {
     id: number;
     category_id: number;
@@ -35,11 +55,12 @@ export interface Project {
     thumbnail_path?: string | null;
     live_url?: string | null;
     github_url?: string | null;
-    extra_meta?: Record<string, any> | null;
+    extra_meta?: ProjectMeta | null;
     is_featured: boolean;
     sort_order: number;
     category?: Category;
     tools?: ToolStack[];
+    images?: ProjectImage[];
 }
 
 export interface Profile {
