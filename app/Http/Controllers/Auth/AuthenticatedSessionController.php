@@ -29,7 +29,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        try {
+            $request->authenticate();
+        } catch (\Illuminate\Database\QueryException $e) {
+            report($e);
+            return back()->withErrors([
+                'email' => 'Gagal terhubung ke database. Pastikan kredensial database sudah terpasang dengan benar.',
+            ]);
+        }
 
         $request->session()->regenerate();
 

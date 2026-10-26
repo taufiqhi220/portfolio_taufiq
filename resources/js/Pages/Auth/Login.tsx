@@ -13,9 +13,9 @@ export default function Login({
     canResetPassword: boolean;
 }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        email: 'taufiq@portfolio.test',
+        email: '',
         password: '',
-        remember: true as boolean,
+        remember: false as boolean,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -116,18 +116,6 @@ export default function Login({
                     >
                         {processing ? 'Memproses Akses...' : 'Masuk ke Dashboard Studio'}
                     </button>
-                </div>
-
-                {/* Helpful studio access hint for local development */}
-                <div className="mt-4 rounded-xl border border-amber-200/80 bg-amber-50/70 p-3.5 text-left">
-                    <div className="flex items-center gap-2 text-[11px] font-mono font-bold uppercase tracking-wider text-amber-900">
-                        <span className="h-1.5 w-1.5 rounded-full bg-amber-600" />
-                        Akses Cepat Administrator
-                    </div>
-                    <div className="mt-1.5 space-y-0.5 text-xs text-amber-950 font-mono">
-                        <p><span className="text-stone-600">Email:</span> taufiq@portfolio.test</p>
-                        <p><span className="text-stone-600">Sandi:</span> password</p>
-                    </div>
                 </div>
             </form>
         </GuestLayout>
