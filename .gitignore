@@ -27,3 +27,5 @@ Homestead.yaml
 Thumbs.db
 install.ps1
 /.agents/mcp_config.json
+/dist
+
