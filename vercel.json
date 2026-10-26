@@ -16,6 +16,7 @@
         "APP_ENV": "production",
         "APP_DEBUG": "true",
         "APP_KEY": "base64:hgl81zU6LlKnUX0sEcRxVru4gB0i47uIuELLuO89Li8=",
+        "ASSET_URL": "/",
         "DB_CONNECTION": "pgsql",
         "DB_HOST": "aws-0-ap-southeast-1.pooler.supabase.com",
         "DB_PORT": "5432",

@@ -28,5 +28,17 @@ putenv('APP_PACKAGES_CACHE=/tmp/bootstrap/cache/packages.php');
 putenv('APP_SERVICES_CACHE=/tmp/bootstrap/cache/services.php');
 putenv('APP_EVENTS_CACHE=/tmp/bootstrap/cache/events.php');
 
+putenv('ASSET_URL=/');
+$_ENV['ASSET_URL'] = '/';
+$_SERVER['ASSET_URL'] = '/';
+
+if (!empty($_SERVER['HTTP_HOST'])) {
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'https';
+    $appUrl = $scheme . '://' . $_SERVER['HTTP_HOST'];
+    putenv("APP_URL={$appUrl}");
+    $_ENV['APP_URL'] = $appUrl;
+    $_SERVER['APP_URL'] = $appUrl;
+}
+
 // Forward Vercel serverless requests to Laravel's public/index.php
 require __DIR__ . '/../public/index.php';
