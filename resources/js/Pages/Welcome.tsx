@@ -26,7 +26,19 @@ interface WelcomeProps {
     };
 }
 
-export default function Welcome({ profile, categories, projects, tools, auth }: WelcomeProps) {
+export default function Welcome({
+    profile = {
+        id: 1,
+        full_name: 'Taufiq Hidayat',
+        headline: 'Web Developer & Video Editor',
+        bio: 'Memadukan ketelitian rekayasa perangkat lunak dengan kepekaan visual storytelling multimedia.',
+        is_available_for_work: true,
+    },
+    categories = [],
+    projects = [],
+    tools = {},
+    auth,
+}: WelcomeProps) {
     const [activeVideoProject, setActiveVideoProject] = useState<Project | null>(null);
     const [activeDetailProject, setActiveDetailProject] = useState<Project | null>(null);
 

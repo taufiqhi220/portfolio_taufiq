@@ -8,10 +8,10 @@ interface ToolsArsenalProps {
     profile?: Profile;
 }
 
-export default function ToolsArsenal({ tools, profile }: ToolsArsenalProps) {
-    const creativeTools = tools['creative_software'] || [];
-    const webTools = tools['web_stack'] || [];
-    const generalTools = tools['general_tools'] || [];
+export default function ToolsArsenal({ tools = {}, profile }: ToolsArsenalProps) {
+    const creativeTools = (tools && tools['creative_software']) || [];
+    const webTools = (tools && tools['web_stack']) || [];
+    const generalTools = (tools && tools['general_tools']) || [];
 
     return (
         <section id="tentang" className="py-20 md:py-28 relative">
