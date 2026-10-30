@@ -3,14 +3,23 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Project } from '@/types/portfolio';
 import ToolIcon from '@/Components/Portfolio/ToolIcon';
+import { confirmDialog } from '@/Utils/alert';
 
 interface ProjectsIndexProps {
     projects: Project[];
 }
 
 export default function ProjectsIndex({ projects }: ProjectsIndexProps) {
-    const handleDelete = (project: Project) => {
-        if (confirm(`Apakah Anda yakin ingin menghapus proyek "${project.title}"?`)) {
+    const handleDelete = async (project: Project) => {
+        const confirmed = await confirmDialog({
+            title: 'Hapus Proyek?',
+            text: `Apakah Anda yakin ingin menghapus proyek "${project.title}"? Seluruh galeri gambar dan relasi terkait akan dibersihkan.`,
+            confirmButtonText: 'Ya, Hapus Proyek',
+            cancelButtonText: 'Batal',
+            isDanger: true,
+        });
+
+        if (confirmed) {
             router.post(
                 route('admin.projects.destroy', project.id),
                 { _method: 'DELETE' },

@@ -1,6 +1,7 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
+import { confirmDialog } from '@/Utils/alert';
 
 interface InquiryItem {
     id: number;
@@ -19,11 +20,23 @@ interface InquiriesIndexProps {
 
 export default function InquiriesIndex({ inquiries }: InquiriesIndexProps) {
     const toggleRead = (id: number) => {
-        router.patch(route('admin.inquiries.toggleRead', id), {}, { preserveScroll: true });
+        router.post(
+            route('admin.inquiries.toggleRead', id),
+            { _method: 'PATCH' },
+            { preserveScroll: true }
+        );
     };
 
-    const handleDelete = (inquiry: InquiryItem) => {
-        if (confirm(`Apakah Anda yakin ingin menghapus pesan dari "${inquiry.name}"?`)) {
+    const handleDelete = async (inquiry: InquiryItem) => {
+        const confirmed = await confirmDialog({
+            title: 'Hapus Pesan Masuk?',
+            text: `Apakah Anda yakin ingin menghapus pesan dari "${inquiry.name}" (${inquiry.email})?`,
+            confirmButtonText: 'Ya, Hapus Pesan',
+            cancelButtonText: 'Batal',
+            isDanger: true,
+        });
+
+        if (confirmed) {
             router.post(
                 route('admin.inquiries.destroy', inquiry.id),
                 { _method: 'DELETE' },

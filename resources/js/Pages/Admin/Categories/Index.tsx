@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router, useForm } from '@inertiajs/react';
 import { Category } from '@/types/portfolio';
+import { confirmDialog, toastWarning } from '@/Utils/alert';
 
 interface CategoriesIndexProps {
     categories: (Category & { is_active?: boolean })[];
@@ -60,12 +61,24 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
         });
     };
 
-    const handleDelete = (cat: Category) => {
+    const handleDelete = async (cat: Category) => {
         if (cat.projects_count && cat.projects_count > 0) {
-            alert(`Kategori "${cat.name}" masih memiliki ${cat.projects_count} proyek. Pindahkan atau hapus proyeknya terlebih dahulu.`);
+            toastWarning(
+                `Kategori "${cat.name}" masih memiliki ${cat.projects_count} proyek aktif. Pindahkan atau hapus proyeknya terlebih dahulu.`,
+                'Kategori Memiliki Proyek'
+            );
             return;
         }
-        if (confirm(`Apakah Anda yakin ingin menghapus kategori "${cat.name}"?`)) {
+
+        const confirmed = await confirmDialog({
+            title: 'Hapus Kategori?',
+            text: `Apakah Anda yakin ingin menghapus kategori "${cat.name}"? Kategori ini tidak akan lagi tampil di tab portofolio.`,
+            confirmButtonText: 'Ya, Hapus Kategori',
+            cancelButtonText: 'Batal',
+            isDanger: true,
+        });
+
+        if (confirmed) {
             router.post(
                 route('admin.categories.destroy', cat.id),
                 { _method: 'DELETE' },

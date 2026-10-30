@@ -11,6 +11,7 @@ import VideoPlayerModal from '@/Components/Portfolio/VideoPlayerModal';
 import ProjectDetailModal from '@/Components/Portfolio/ProjectDetailModal';
 import FluidBackground from '@/Components/Portfolio/FluidBackground';
 import MarqueeTicker from '@/Components/Portfolio/MarqueeTicker';
+import FlashNotification from '@/Components/Feedback/FlashNotification';
 
 interface WelcomeProps {
     profile: Profile;
@@ -117,6 +118,7 @@ export default function Welcome({
             </Head>
 
             <div className="min-h-screen bg-transparent text-stone-900 selection:bg-amber-100 selection:text-amber-900 font-sans antialiased relative">
+                <FlashNotification />
                 {/* Dynamic Fluid Organic Waves Background */}
                 <FluidBackground />
 

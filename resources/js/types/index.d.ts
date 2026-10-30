@@ -11,4 +11,11 @@ export type PageProps<
     auth: {
         user: User;
     };
+    flash?: {
+        success?: string | null;
+        error?: string | null;
+        warning?: string | null;
+        info?: string | null;
+        timestamp?: number;
+    };
 };

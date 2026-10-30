@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router, useForm } from '@inertiajs/react';
 import { ToolStack } from '@/types/portfolio';
 import ToolIcon from '@/Components/Portfolio/ToolIcon';
+import { confirmDialog } from '@/Utils/alert';
 
 interface ToolsIndexProps {
     tools: ToolStack[];
@@ -94,16 +95,22 @@ export default function ToolsIndex({ tools }: ToolsIndexProps) {
         });
     };
 
-    const handleDelete = (tool: ToolStack) => {
-        if (tool.projects_count && tool.projects_count > 0) {
-            if (!confirm(`Tool "${tool.name}" masih terhubung dengan ${tool.projects_count} proyek. Tetap hapus?`)) {
-                return;
-            }
-        } else {
-            if (!confirm(`Hapus tool "${tool.name}" dari daftar tech stack?`)) {
-                return;
-            }
+    const handleDelete = async (tool: ToolStack) => {
+        const hasProjects = Boolean(tool.projects_count && tool.projects_count > 0);
+        const confirmed = await confirmDialog({
+            title: 'Hapus Tech Stack?',
+            text: hasProjects
+                ? `Tool "${tool.name}" masih terhubung dengan ${tool.projects_count} proyek. Tetap hapus dari daftar tech stack?`
+                : `Apakah Anda yakin ingin menghapus "${tool.name}" dari daftar tech stack?`,
+            confirmButtonText: 'Ya, Hapus Tool',
+            cancelButtonText: 'Batal',
+            isDanger: true,
+        });
+
+        if (!confirmed) {
+            return;
         }
+
         router.post(
             route('admin.tools.destroy', tool.id),
             { _method: 'DELETE' },

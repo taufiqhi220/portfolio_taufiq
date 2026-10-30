@@ -1,4 +1,5 @@
 import Dropdown from '@/Components/Dropdown';
+import FlashNotification from '@/Components/Feedback/FlashNotification';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
@@ -13,6 +14,7 @@ export default function Authenticated({
 
     return (
         <div className="min-h-screen bg-[#FAF8F5] text-stone-900 font-sans antialiased">
+            <FlashNotification />
             {/* Top Navigation Bar */}
             <nav className="border-b border-stone-200/80 bg-white/90 backdrop-blur-md sticky top-0 z-30">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
