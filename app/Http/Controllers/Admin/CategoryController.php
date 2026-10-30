@@ -67,13 +67,21 @@ class CategoryController extends Controller
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    public function destroy(Category $category)
+    public function destroy(Request $request, $category)
     {
-        if ($category->projects()->count() > 0) {
+        $model = $category instanceof Category
+            ? $category
+            : (Category::find($category) ?? Category::where('slug', $category)->first());
+
+        if (! $model) {
+            return redirect()->route('admin.categories.index')->with('warning', 'Kategori tidak ditemukan atau sudah dihapus sebelumnya.');
+        }
+
+        if ($model->projects()->count() > 0) {
             return back()->with('error', 'Kategori tidak dapat dihapus karena masih memiliki proyek terkait.');
         }
 
-        $category->delete();
+        $model->delete();
 
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil dihapus.');
     }

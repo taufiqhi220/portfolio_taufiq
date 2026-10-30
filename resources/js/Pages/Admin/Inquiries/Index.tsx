@@ -24,7 +24,11 @@ export default function InquiriesIndex({ inquiries }: InquiriesIndexProps) {
 
     const handleDelete = (inquiry: InquiryItem) => {
         if (confirm(`Apakah Anda yakin ingin menghapus pesan dari "${inquiry.name}"?`)) {
-            router.delete(route('admin.inquiries.destroy', inquiry.id), { preserveScroll: true });
+            router.post(
+                route('admin.inquiries.destroy', inquiry.id),
+                { _method: 'DELETE' },
+                { preserveScroll: true }
+            );
         }
     };
 

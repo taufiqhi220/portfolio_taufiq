@@ -11,7 +11,13 @@ interface ProjectsIndexProps {
 export default function ProjectsIndex({ projects }: ProjectsIndexProps) {
     const handleDelete = (project: Project) => {
         if (confirm(`Apakah Anda yakin ingin menghapus proyek "${project.title}"?`)) {
-            router.delete(route('admin.projects.destroy', project.id));
+            router.post(
+                route('admin.projects.destroy', project.id),
+                { _method: 'DELETE' },
+                {
+                    preserveScroll: true,
+                }
+            );
         }
     };
 

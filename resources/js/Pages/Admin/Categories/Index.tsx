@@ -66,7 +66,11 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
             return;
         }
         if (confirm(`Apakah Anda yakin ingin menghapus kategori "${cat.name}"?`)) {
-            router.delete(route('admin.categories.destroy', cat.id));
+            router.post(
+                route('admin.categories.destroy', cat.id),
+                { _method: 'DELETE' },
+                { preserveScroll: true }
+            );
         }
     };
 

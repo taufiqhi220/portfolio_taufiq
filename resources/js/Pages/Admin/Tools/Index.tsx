@@ -104,7 +104,11 @@ export default function ToolsIndex({ tools }: ToolsIndexProps) {
                 return;
             }
         }
-        router.delete(route('admin.tools.destroy', tool.id));
+        router.post(
+            route('admin.tools.destroy', tool.id),
+            { _method: 'DELETE' },
+            { preserveScroll: true }
+        );
     };
 
     const filteredTools = tools.filter((t) => {

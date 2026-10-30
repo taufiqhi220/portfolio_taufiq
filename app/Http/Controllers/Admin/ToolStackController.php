@@ -117,10 +117,18 @@ class ToolStackController extends Controller
     /**
      * Remove the specified tech stack tool.
      */
-    public function destroy(ToolStack $tool)
+    public function destroy(Request $request, $tool)
     {
-        $tool->projects()->detach();
-        $tool->delete();
+        $model = $tool instanceof ToolStack
+            ? $tool
+            : (ToolStack::find($tool) ?? ToolStack::where('slug', $tool)->first());
+
+        if (! $model) {
+            return redirect()->route('admin.tools.index')->with('warning', 'Tech stack tidak ditemukan atau sudah dihapus sebelumnya.');
+        }
+
+        $model->projects()->detach();
+        $model->delete();
 
         return redirect()->route('admin.tools.index')->with('success', 'Tech stack berhasil dihapus.');
     }

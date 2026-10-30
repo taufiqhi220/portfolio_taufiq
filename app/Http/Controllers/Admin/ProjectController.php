@@ -246,11 +246,19 @@ class ProjectController extends Controller
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil diperbarui.');
     }
 
-    public function destroy(Project $project)
+    public function destroy(Request $request, $project)
     {
-        $project->tools()->detach();
-        $project->images()->delete();
-        $project->delete();
+        $model = $project instanceof Project
+            ? $project
+            : (Project::find($project) ?? Project::where('slug', $project)->first());
+
+        if (! $model) {
+            return redirect()->route('admin.projects.index')->with('warning', 'Proyek tidak ditemukan atau telah dihapus sebelumnya.');
+        }
+
+        $model->tools()->detach();
+        $model->images()->delete();
+        $model->delete();
 
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil dihapus.');
     }

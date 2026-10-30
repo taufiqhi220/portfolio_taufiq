@@ -29,9 +29,12 @@ class InquiryController extends Controller
         return back()->with('success', 'Status pesan berhasil diubah.');
     }
 
-    public function destroy(Inquiry $inquiry)
+    public function destroy(Request $request, $inquiry)
     {
-        $inquiry->delete();
+        $model = $inquiry instanceof Inquiry ? $inquiry : Inquiry::find($inquiry);
+        if ($model) {
+            $model->delete();
+        }
 
         return back()->with('success', 'Pesan berhasil dihapus.');
     }

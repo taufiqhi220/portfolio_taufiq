@@ -28,8 +28,11 @@ Route::middleware(['auth'])->group(function () {
     // Admin Resource Routes
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('projects', ProjectController::class);
+        Route::post('projects/{project}/delete', [ProjectController::class, 'destroy'])->name('projects.destroy.post');
         Route::resource('categories', CategoryController::class)->except(['create', 'show', 'edit']);
+        Route::post('categories/{category}/delete', [CategoryController::class, 'destroy'])->name('categories.destroy.post');
         Route::resource('tools', \App\Http\Controllers\Admin\ToolStackController::class)->except(['create', 'show', 'edit']);
+        Route::post('tools/{tool}/delete', [\App\Http\Controllers\Admin\ToolStackController::class, 'destroy'])->name('tools.destroy.post');
 
         // Inquiries
         Route::get('inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
