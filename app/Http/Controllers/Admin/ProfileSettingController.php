@@ -44,7 +44,6 @@ class ProfileSettingController extends Controller
             'github_url' => 'nullable|url|max:255',
             'linkedin_url' => 'nullable|url|max:255',
             'instagram_url' => 'nullable|url|max:255',
-            'resume_url' => 'nullable|string|max:500',
             'is_available_for_work' => 'boolean',
         ]);
 

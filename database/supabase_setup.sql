@@ -141,7 +141,6 @@ CREATE TABLE IF NOT EXISTS profile_settings (
     github_url VARCHAR(255) NULL,
     linkedin_url VARCHAR(255) NULL,
     instagram_url VARCHAR(255) NULL,
-    resume_url VARCHAR(255) NULL,
     is_available_for_work BOOLEAN DEFAULT true,
     created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP
@@ -188,7 +187,7 @@ VALUES (1, 'Taufiq Hidayat', 'taufiq@portfolio.test', '$2y$12$5gnNSJPsa7aiImceGJ
 ON CONFLICT (email) DO NOTHING;
 
 -- Profile Settings
-INSERT INTO profile_settings (id, full_name, headline, bio, phone, location, github_url, linkedin_url, instagram_url, resume_url, is_available_for_work, created_at, updated_at)
+INSERT INTO profile_settings (id, full_name, headline, bio, phone, location, github_url, linkedin_url, instagram_url, is_available_for_work, created_at, updated_at)
 VALUES (
     1,
     'Taufiq Hidayat',
@@ -199,7 +198,6 @@ VALUES (
     'https://github.com/taufiqhidayat',
     'https://linkedin.com/in/taufiqhidayat',
     'https://instagram.com/taufiqhidayat',
-    '#',
     true,
     CURRENT_TIMESTAMP,
     CURRENT_TIMESTAMP

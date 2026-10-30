@@ -15,7 +15,6 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
         location: profile.location || 'Indonesia (WITA / UTC+8)',
         github_url: profile.github_url || '',
         linkedin_url: profile.linkedin_url || '',
-        resume_url: profile.resume_url || '',
         is_available_for_work: profile.is_available_for_work ?? true,
     });
 
@@ -113,7 +112,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
 
                             <div className="border-t border-stone-200/80 pt-6">
                                 <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-stone-900 mb-4">
-                                    Tautan Portofolio Profesional &amp; Dokumen
+                                    Tautan Portofolio Profesional
                                 </h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
@@ -138,21 +137,6 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
                                             className="w-full px-3.5 py-2 border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 transition-all"
                                         />
                                     </div>
-                                </div>
-
-                                <div className="mt-4">
-                                    <label htmlFor="resume_url" className="block text-xs font-mono text-stone-600 mb-1">
-                                        Tautan CV / Resume Publik (Google Drive / Dropbox / PDF URL)
-                                    </label>
-                                    <input
-                                        id="resume_url"
-                                        type="url"
-                                        value={data.resume_url}
-                                        onChange={(e) => setData('resume_url', e.target.value)}
-                                        placeholder="https://drive.google.com/file/d/.../view atau link PDF resume"
-                                        className="w-full px-3.5 py-2 border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 transition-all"
-                                    />
-                                    {errors.resume_url && <p className="text-xs text-rose-500 mt-1">{errors.resume_url}</p>}
                                 </div>
                             </div>
 

@@ -7,8 +7,7 @@ interface ContactFormProps {
 }
 
 export default function ContactForm({ profile }: ContactFormProps) {
-    const hasResume = Boolean(profile.resume_url && profile.resume_url !== '#');
-    const hasSocialLinks = Boolean(profile.github_url || profile.linkedin_url || hasResume);
+    const hasSocialLinks = Boolean(profile.github_url || profile.linkedin_url);
 
     return (
         <section id="kontak" className="py-20 md:py-28 relative">
@@ -31,7 +30,7 @@ export default function ContactForm({ profile }: ContactFormProps) {
                     <Reveal delay={120}>
                         <div className="max-w-lg mx-auto bg-white/75 backdrop-blur-md rounded-2xl border border-stone-300/60 shadow-[0_4px_24px_-6px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.85)] p-6 sm:p-8">
                             <span className="block text-xs font-mono text-stone-400 uppercase tracking-wider mb-4">
-                                Tautan Profil &amp; Dokumen
+                                Tautan Profil
                             </span>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -60,20 +59,6 @@ export default function ContactForm({ profile }: ContactFormProps) {
                                             <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2m1.4 9.74v-8.37H5.06v8.37h2.8z" />
                                         </svg>
                                         <span>LinkedIn</span>
-                                    </a>
-                                )}
-
-                                {hasResume && (
-                                    <a
-                                        href={profile.resume_url!}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="sm:col-span-2 p-3.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-xs"
-                                    >
-                                        <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                        <span>Lihat CV / Resume</span>
                                     </a>
                                 )}
                             </div>

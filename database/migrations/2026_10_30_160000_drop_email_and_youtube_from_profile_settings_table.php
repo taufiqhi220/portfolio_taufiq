@@ -10,11 +10,10 @@ return new class extends Migration
     {
         if (Schema::hasTable('profile_settings')) {
             $columnsToDrop = [];
-            if (Schema::hasColumn('profile_settings', 'email')) {
-                $columnsToDrop[] = 'email';
-            }
-            if (Schema::hasColumn('profile_settings', 'youtube_url')) {
-                $columnsToDrop[] = 'youtube_url';
+            foreach (['email', 'youtube_url', 'resume_url'] as $col) {
+                if (Schema::hasColumn('profile_settings', $col)) {
+                    $columnsToDrop[] = $col;
+                }
             }
 
             if (!empty($columnsToDrop)) {
@@ -39,3 +38,4 @@ return new class extends Migration
         }
     }
 };
+

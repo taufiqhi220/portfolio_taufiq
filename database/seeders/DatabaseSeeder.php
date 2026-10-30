@@ -39,7 +39,6 @@ class DatabaseSeeder extends Seeder
                 'github_url' => 'https://github.com/taufiqhidayat',
                 'linkedin_url' => 'https://linkedin.com/in/taufiqhidayat',
                 'instagram_url' => 'https://instagram.com/taufiqhidayat',
-                'resume_url' => '#',
                 'is_available_for_work' => true,
             ]
         );

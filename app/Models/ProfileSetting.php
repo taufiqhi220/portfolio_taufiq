@@ -22,7 +22,6 @@ class ProfileSetting extends Model
         'github_url',
         'linkedin_url',
         'instagram_url',
-        'resume_url',
         'is_available_for_work',
     ];
 
@@ -31,11 +30,11 @@ class ProfileSetting extends Model
     ];
 
     /**
-     * Automatically drop deprecated email and youtube_url columns from profile_settings if they still exist.
+     * Automatically drop deprecated email, youtube_url, and resume_url columns from profile_settings if they still exist.
      */
     public static function dropDeprecatedColumnsIfNeeded(): void
     {
-        $cacheKey = 'profile_settings_cols_dropped_v1';
+        $cacheKey = 'profile_settings_cols_dropped_v2';
 
         try {
             if (Cache::get($cacheKey)) {
@@ -48,11 +47,10 @@ class ProfileSetting extends Model
         try {
             if (Schema::hasTable('profile_settings')) {
                 $columnsToDrop = [];
-                if (Schema::hasColumn('profile_settings', 'email')) {
-                    $columnsToDrop[] = 'email';
-                }
-                if (Schema::hasColumn('profile_settings', 'youtube_url')) {
-                    $columnsToDrop[] = 'youtube_url';
+                foreach (['email', 'youtube_url', 'resume_url'] as $col) {
+                    if (Schema::hasColumn('profile_settings', $col)) {
+                        $columnsToDrop[] = $col;
+                    }
                 }
 
                 if (!empty($columnsToDrop)) {

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('github_url')->nullable();
             $table->string('linkedin_url')->nullable();
             $table->string('instagram_url')->nullable();
-            $table->string('resume_url')->nullable();
             $table->boolean('is_available_for_work')->default(true);
             $table->timestamps();
         });

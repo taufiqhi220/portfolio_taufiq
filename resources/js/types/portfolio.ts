@@ -81,6 +81,5 @@ export interface Profile {
     github_url?: string | null;
     linkedin_url?: string | null;
     instagram_url?: string | null;
-    resume_url?: string | null;
     is_available_for_work: boolean;
 }
