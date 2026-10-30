@@ -5,7 +5,7 @@ import ToolIcon from './ToolIcon';
 interface ProjectDetailModalProps {
     project: Project | null;
     onClose: () => void;
-    onPlayVideo?: (project: Project) => void;
+    onPlayVideo?: (project: Project, episodeIndex?: number) => void;
 }
 
 export default function ProjectDetailModal({ project, onClose, onPlayVideo }: ProjectDetailModalProps) {
@@ -307,7 +307,7 @@ export default function ProjectDetailModal({ project, onClose, onPlayVideo }: Pr
                                         onClick={() => {
                                             if (onPlayVideo) {
                                                 onClose();
-                                                onPlayVideo(project);
+                                                onPlayVideo(project, idx);
                                             }
                                         }}
                                         className="flex items-center justify-between p-3 rounded-xl bg-stone-50 hover:bg-amber-50/70 border border-stone-200 hover:border-amber-300 text-left text-xs font-mono transition-all cursor-pointer"

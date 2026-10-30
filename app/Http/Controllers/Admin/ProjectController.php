@@ -20,7 +20,8 @@ class ProjectController extends Controller
         $projects = Project::with(['category', 'tools', 'images'])
             ->orderBy('sort_order', 'asc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->each(fn (Project $project) => $project->resolvePlaylistIfNeeded());
 
         return Inertia::render('Admin/Projects/Index', [
             'projects' => $projects,
@@ -100,6 +101,8 @@ class ProjectController extends Controller
             'sort_order' => $validated['sort_order'] ?? 0,
         ]);
 
+        $project->resolvePlaylistIfNeeded();
+
         if (!empty($validated['tool_ids'])) {
             $project->tools()->sync($validated['tool_ids']);
         }
@@ -137,6 +140,7 @@ class ProjectController extends Controller
 
     public function edit(Project $project): Response
     {
+        $project->resolvePlaylistIfNeeded();
         $project->load(['category', 'tools', 'images']);
         $categories = Category::orderBy('sort_order', 'asc')->get();
         $tools = ToolStack::orderBy('sort_order', 'asc')->get();
@@ -209,6 +213,8 @@ class ProjectController extends Controller
             'is_featured' => $request->boolean('is_featured'),
             'sort_order' => $validated['sort_order'] ?? 0,
         ]);
+
+        $project->resolvePlaylistIfNeeded();
 
         if (isset($validated['tool_ids'])) {
             $project->tools()->sync($validated['tool_ids']);

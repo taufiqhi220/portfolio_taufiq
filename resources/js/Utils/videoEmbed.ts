@@ -13,16 +13,12 @@ export function toEmbedUrl(rawUrl?: string | null): string | null {
         return `https://www.youtube.com/embed/videoseries?list=${playlistMatch[1]}&rel=0`;
     }
 
-    // YouTube Watch / Shorts / Embed / youtu.be (optionally with &list=...)
+    // YouTube Watch / Shorts / Embed / youtu.be (do not pass &list=PL... because Unlisted playlists fail in YouTube's iframe player)
     const ytMatch = url.match(
         /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/i
     );
     if (ytMatch) {
         const videoId = ytMatch[1];
-        const listParam = url.match(/[?&]list=([a-zA-Z0-9_-]+)/i);
-        if (listParam) {
-            return `https://www.youtube.com/embed/${videoId}?list=${listParam[1]}&autoplay=1&rel=0`;
-        }
         return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
     }
 
@@ -42,3 +38,4 @@ export function toEmbedUrl(rawUrl?: string | null): string | null {
 
     return url;
 }
+

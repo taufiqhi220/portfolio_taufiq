@@ -165,4 +165,38 @@ class PortfolioTest extends TestCase
         $serveResponse->assertStatus(200);
         $this->assertEquals($svgContent, $serveResponse->getContent());
     }
+
+    public function test_youtube_playlist_resolves_episodes_and_embed_url(): void
+    {
+        \Illuminate\Support\Facades\Http::fake([
+            'https://www.youtube.com/playlist*' => \Illuminate\Support\Facades\Http::response(
+                '<script>var ytInitialData = {"contents":{"twoColumnBrowseResultsRenderer":{"tabs":[{"tabRenderer":{"content":{"sectionListRenderer":{"contents":[{"itemSectionRenderer":{"contents":[{"lockupViewModel":{"contentId":"dIvwUxv8yHc","metadata":{"lockupMetadataViewModel":{"title":{"content":"USTD GAUL EPS 26"}}},"contentImage":{"thumbnailViewModel":{"overlays":[{"thumbnailBottomOverlayViewModel":{"badges":[{"thumbnailBadgeViewModel":{"text":"1.02.25"}}]}}]}}}},{"lockupViewModel":{"contentId":"w49GDj_e4bw","metadata":{"lockupMetadataViewModel":{"title":{"content":"USTD GAUL EPS 27"}}},"contentImage":{"thumbnailViewModel":{"overlays":[{"thumbnailBottomOverlayViewModel":{"badges":[{"thumbnailBadgeViewModel":{"text":"55.41"}}]}}]}}}}]}}]}}}}]}}};</script>',
+                200
+            ),
+        ]);
+
+        $category = Category::first() ?? Category::create([
+            'name' => 'Video Editing & Motion',
+            'slug' => 'video-editing',
+            'display_mode' => 'video',
+            'sort_order' => 1,
+        ]);
+        $project = Project::create([
+            'category_id' => $category->id,
+            'title' => 'Ustad Gaul Season 3',
+            'slug' => 'ustad-gaul-season-3',
+            'summary' => 'Program televisi Ustad Gaul.',
+            'media_type' => 'video_embed',
+            'video_url' => 'https://youtube.com/playlist?list=PL0S65_4EEcXDElr4VC_z_A04rr9X27NxW',
+            'extra_meta' => ['aspect_ratio' => '16:9'],
+        ]);
+
+        $project->resolvePlaylistIfNeeded();
+
+        $this->assertCount(2, $project->extra_meta['episodes']);
+        $this->assertEquals('USTD GAUL EPS 26', $project->extra_meta['episodes'][0]['title']);
+        $this->assertEquals('https://www.youtube.com/watch?v=dIvwUxv8yHc', $project->extra_meta['episodes'][0]['video_url']);
+        $this->assertEquals('1:02:25', $project->extra_meta['episodes'][0]['duration']);
+        $this->assertEquals('https://www.youtube.com/embed/dIvwUxv8yHc?autoplay=1&rel=0', $project->embed_url);
+    }
 }

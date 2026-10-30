@@ -4,12 +4,13 @@ import { toEmbedUrl } from '@/Utils/videoEmbed';
 
 interface VideoPlayerModalProps {
     project: Project | null;
+    initialEpisodeIndex?: number;
     onClose: () => void;
 }
 
-export default function VideoPlayerModal({ project, onClose }: VideoPlayerModalProps) {
+export default function VideoPlayerModal({ project, initialEpisodeIndex = 0, onClose }: VideoPlayerModalProps) {
     const [animateIn, setAnimateIn] = useState(false);
-    const [activeEpisodeIndex, setActiveEpisodeIndex] = useState(0);
+    const [activeEpisodeIndex, setActiveEpisodeIndex] = useState(initialEpisodeIndex);
 
     const playlist = useMemo<VideoEpisode[]>(() => {
         if (!project) return [];
@@ -18,9 +19,10 @@ export default function VideoPlayerModal({ project, onClose }: VideoPlayerModalP
             return [];
         }
 
-        // If main video_url is distinct from all episode URLs, include it first
+        // If main video_url is a standalone video (not a playlist container) and distinct from all episode URLs, include it first
         const mainUrl = project.video_url?.trim();
-        if (mainUrl && !episodes.some((ep) => ep.video_url?.trim() === mainUrl)) {
+        const isPlaylistContainer = mainUrl ? /youtube\.com\/playlist\?/i.test(mainUrl) : false;
+        if (mainUrl && !isPlaylistContainer && !episodes.some((ep) => ep.video_url?.trim() === mainUrl)) {
             return [
                 {
                     title: 'Video Utama',
@@ -42,7 +44,7 @@ export default function VideoPlayerModal({ project, onClose }: VideoPlayerModalP
         };
 
         if (project) {
-            setActiveEpisodeIndex(0);
+            setActiveEpisodeIndex(initialEpisodeIndex);
             document.body.style.overflow = 'hidden';
             window.addEventListener('keydown', handleKeyDown);
             const timer = setTimeout(() => setAnimateIn(true), 20);
@@ -54,20 +56,22 @@ export default function VideoPlayerModal({ project, onClose }: VideoPlayerModalP
         } else {
             setAnimateIn(false);
         }
-    }, [project, onClose]);
+    }, [project, initialEpisodeIndex, onClose]);
 
     if (!project) return null;
 
     const currentEpisode = playlist.length > 0 ? playlist[activeEpisodeIndex] || playlist[0] : null;
     const rawVideoUrl = currentEpisode ? currentEpisode.video_url : project.video_url;
-    const embedUrl = toEmbedUrl(rawVideoUrl) || project.embed_url || rawVideoUrl;
+    const isRawPlaylistUrl = rawVideoUrl ? /youtube\.com\/playlist\?/i.test(rawVideoUrl) : false;
+    const embedUrl = isRawPlaylistUrl
+        ? (project.embed_url || toEmbedUrl(rawVideoUrl) || rawVideoUrl)
+        : (toEmbedUrl(rawVideoUrl) || project.embed_url || rawVideoUrl);
     const isVertical = project.extra_meta?.aspect_ratio === '9:16';
 
     return (
         <div
-            className={`fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 transition-all duration-300 ease-out ${
-                animateIn ? 'bg-black/85 backdrop-blur-md opacity-100' : 'bg-black/0 backdrop-blur-none opacity-0'
-            }`}
+            className={`fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 transition-all duration-300 ease-out ${animateIn ? 'bg-black/85 backdrop-blur-md opacity-100' : 'bg-black/0 backdrop-blur-none opacity-0'
+                }`}
             role="dialog"
             aria-modal="true"
             aria-labelledby="video-modal-title"
@@ -76,11 +80,9 @@ export default function VideoPlayerModal({ project, onClose }: VideoPlayerModalP
             <div className="absolute inset-0" onClick={onClose} />
 
             <div
-                className={`relative z-10 w-full ${
-                    isVertical ? 'max-w-sm sm:max-w-md' : 'max-w-4xl'
-                } max-h-[92vh] flex flex-col bg-stone-900 border border-stone-800 rounded-2xl overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out transform ${
-                    animateIn ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
-                }`}
+                className={`relative z-10 w-full ${isVertical ? 'max-w-sm sm:max-w-md' : 'max-w-4xl'
+                    } max-h-[92vh] flex flex-col bg-stone-900 border border-stone-800 rounded-2xl overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out transform ${animateIn ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
+                    }`}
             >
                 {/* Header bar */}
                 <div className="flex items-center justify-between px-5 sm:px-6 py-3.5 sm:py-4 border-b border-stone-800 bg-stone-950/90 shrink-0">
@@ -108,9 +110,8 @@ export default function VideoPlayerModal({ project, onClose }: VideoPlayerModalP
 
                 {/* Adaptive Video Aspect Ratio Container (16:9 Landscape vs 9:16 Vertical) */}
                 <div
-                    className={`relative w-full ${
-                        isVertical ? 'aspect-[9/16] max-h-[58vh]' : 'aspect-video max-h-[60vh]'
-                    } bg-black flex items-center justify-center shrink-0`}
+                    className={`relative w-full ${isVertical ? 'aspect-[9/16] max-h-[58vh]' : 'aspect-video max-h-[60vh]'
+                        } bg-black flex items-center justify-center shrink-0`}
                 >
                     {embedUrl ? (
                         <iframe
@@ -163,11 +164,10 @@ export default function VideoPlayerModal({ project, onClose }: VideoPlayerModalP
                                         key={idx}
                                         type="button"
                                         onClick={() => setActiveEpisodeIndex(idx)}
-                                        className={`flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-mono transition-all cursor-pointer border ${
-                                            isCurrent
-                                                ? 'bg-amber-500/15 border-amber-500 text-amber-300 font-bold'
-                                                : 'bg-stone-950/60 border-stone-800 text-stone-300 hover:bg-stone-800/80 hover:text-white'
-                                        }`}
+                                        className={`flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-mono transition-all cursor-pointer border ${isCurrent
+                                            ? 'bg-amber-500/15 border-amber-500 text-amber-300 font-bold'
+                                            : 'bg-stone-950/60 border-stone-800 text-stone-300 hover:bg-stone-800/80 hover:text-white'
+                                            }`}
                                     >
                                         <span className="truncate pr-2">
                                             {idx + 1}. {ep.title || `Episode ${idx + 1}`}

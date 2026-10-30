@@ -41,6 +41,7 @@ export default function Welcome({
     auth,
 }: WelcomeProps) {
     const [activeVideoProject, setActiveVideoProject] = useState<Project | null>(null);
+    const [activeEpisodeIndex, setActiveEpisodeIndex] = useState<number>(0);
     const [activeDetailProject, setActiveDetailProject] = useState<Project | null>(null);
 
     // Deep-link support: read ?project=slug on initial load
@@ -80,7 +81,8 @@ export default function Welcome({
         }
     };
 
-    const handleOpenVideo = (project: Project) => {
+    const handleOpenVideo = (project: Project, episodeIndex = 0) => {
+        setActiveEpisodeIndex(episodeIndex);
         setActiveVideoProject(project);
         if (typeof window !== 'undefined') {
             const url = new URL(window.location.href);
@@ -158,6 +160,7 @@ export default function Welcome({
                 {/* Interactive Video Player Modal (YouTube, Google Drive, Vimeo, MP4) */}
                 <VideoPlayerModal
                     project={activeVideoProject}
+                    initialEpisodeIndex={activeEpisodeIndex}
                     onClose={handleCloseVideo}
                 />
 
@@ -165,9 +168,9 @@ export default function Welcome({
                 <ProjectDetailModal
                     project={activeDetailProject}
                     onClose={handleCloseDetail}
-                    onPlayVideo={(project) => {
+                    onPlayVideo={(project, episodeIndex = 0) => {
                         handleCloseDetail();
-                        handleOpenVideo(project);
+                        handleOpenVideo(project, episodeIndex);
                     }}
                 />
             </div>

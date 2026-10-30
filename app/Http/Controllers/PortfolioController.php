@@ -36,7 +36,8 @@ class PortfolioController extends Controller
             $projects = Project::with(['category', 'tools', 'images'])
                 ->orderBy('is_featured', 'desc')
                 ->orderBy('sort_order', 'asc')
-                ->get();
+                ->get()
+                ->each(fn (Project $project) => $project->resolvePlaylistIfNeeded());
 
             $tools = ToolStack::orderBy('sort_order', 'asc')
                 ->get()
