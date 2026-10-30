@@ -136,7 +136,7 @@ export default function Hero({ profile, projects = [], onPlayVideo, onViewDetail
                                         <span className="w-5 h-5 rounded-full bg-amber-500 text-stone-950 flex items-center justify-center text-xs group-hover:scale-110 transition-transform">
                                             ▶
                                         </span>
-                                        <span>Tonton Showreel (01:00)</span>
+                                        <span>Tonton Video Karya</span>
                                     </button>
                                 )}
 
@@ -201,7 +201,7 @@ export default function Hero({ profile, projects = [], onPlayVideo, onViewDetail
                                                     : 'text-stone-500 hover:text-stone-900'
                                             }`}
                                         >
-                                            🎬 Video Reel
+                                            🎬 Karya Video
                                         </button>
                                         <button
                                             type="button"
@@ -242,7 +242,7 @@ export default function Hero({ profile, projects = [], onPlayVideo, onViewDetail
                                                             <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
                                                             <span>REC [4K DCI &bull; 24FPS]</span>
                                                         </span>
-                                                        <span className="text-amber-400/90 font-medium">SHOWREEL 01:00</span>
+                                                        <span className="text-amber-400/90 font-medium">VIDEO SHOWCASE</span>
                                                     </div>
 
                                                     {/* Center Stage: Title Preview */}
@@ -375,7 +375,7 @@ export default function Hero({ profile, projects = [], onPlayVideo, onViewDetail
                                                         onClick={() => onPlayVideo?.(activeProject)}
                                                         className="font-mono text-xs text-amber-800 hover:text-amber-950 font-bold flex items-center gap-1 hover:underline underline-offset-4 cursor-pointer"
                                                     >
-                                                        <span>Putar Teaser (01:00)</span>
+                                                        <span>Putar Video</span>
                                                         <span>&rarr;</span>
                                                     </button>
                                                 ) : (

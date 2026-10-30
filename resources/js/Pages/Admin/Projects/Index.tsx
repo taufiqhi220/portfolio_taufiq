@@ -110,9 +110,11 @@ export default function ProjectsIndex({ projects }: ProjectsIndexProps) {
                                         </td>
                                         <td className="py-4 px-5 text-xs font-mono">
                                             <div className="flex flex-wrap items-center gap-2">
-                                                {p.video_url && (
+                                                {(p.video_url || (p.extra_meta?.episodes && p.extra_meta.episodes.length > 0)) && (
                                                     <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 font-medium">
-                                                        Video Reel
+                                                        {p.extra_meta?.episodes && p.extra_meta.episodes.length > 0
+                                                            ? `Playlist (${p.extra_meta.episodes.length} Ep)`
+                                                            : 'Video'}
                                                     </span>
                                                 )}
                                                 {p.live_url && (

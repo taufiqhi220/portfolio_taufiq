@@ -93,3 +93,4 @@ export async function compressImageFile(
         img.src = objectUrl;
     });
 }
+

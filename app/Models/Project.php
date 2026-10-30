@@ -60,35 +60,53 @@ class Project extends Model
     }
 
     /**
-     * Transform raw YouTube or Google Drive URLs into playable iframe embed URLs
+     * Transform raw YouTube, Playlist, Shorts, Vimeo, or Google Drive URLs into playable iframe embed URLs.
      */
     protected function embedUrl(): Attribute
     {
         return Attribute::make(
             get: function () {
-                if (empty($this->video_url)) {
+                $rawUrl = $this->video_url;
+
+                if (empty($rawUrl) && !empty($this->extra_meta['episodes'][0]['video_url'])) {
+                    $rawUrl = $this->extra_meta['episodes'][0]['video_url'];
+                }
+
+                if (empty($rawUrl)) {
                     return null;
                 }
 
-                $url = trim($this->video_url);
-
-                // YouTube: https://www.youtube.com/watch?v=ID or https://youtu.be/ID
-                if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i', $url, $matches)) {
-                    return "https://www.youtube.com/embed/{$matches[1]}?autoplay=1&rel=0";
-                }
-
-                // Google Drive: https://drive.google.com/file/d/FILE_ID/view...
-                if (preg_match('/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i', $url, $matches)) {
-                    return "https://drive.google.com/file/d/{$matches[1]}/preview";
-                }
-
-                // Vimeo: https://vimeo.com/ID
-                if (preg_match('/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/i', $url, $matches)) {
-                    return "https://player.vimeo.com/video/{$matches[3]}?autoplay=1";
-                }
-
-                return $url;
+                return self::convertVideoUrlToEmbed(trim($rawUrl));
             }
         );
+    }
+
+    public static function convertVideoUrlToEmbed(string $url): string
+    {
+        // Pure YouTube Playlist: https://www.youtube.com/playlist?list=PL...
+        if (preg_match('/youtube\.com\/playlist\?.*list=([a-zA-Z0-9_-]+)/i', $url, $matches)) {
+            return "https://www.youtube.com/embed/videoseries?list={$matches[1]}&rel=0";
+        }
+
+        // YouTube Watch/Shorts/Embed/youtu.be (optionally with &list=...)
+        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i', $url, $matches)) {
+            $videoId = $matches[1];
+            if (preg_match('/[?&]list=([a-zA-Z0-9_-]+)/i', $url, $listMatches)) {
+                return "https://www.youtube.com/embed/{$videoId}?list={$listMatches[1]}&autoplay=1&rel=0";
+            }
+            return "https://www.youtube.com/embed/{$videoId}?autoplay=1&rel=0";
+        }
+
+        // Google Drive: https://drive.google.com/file/d/FILE_ID/view...
+        if (preg_match('/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i', $url, $matches)) {
+            return "https://drive.google.com/file/d/{$matches[1]}/preview";
+        }
+
+        // Vimeo: https://vimeo.com/ID
+        if (preg_match('/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/i', $url, $matches)) {
+            return "https://player.vimeo.com/video/{$matches[3]}?autoplay=1";
+        }
+
+        return $url;
     }
 }

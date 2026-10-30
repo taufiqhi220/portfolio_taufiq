@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Category, ToolStack } from '@/types/portfolio';
+import { Category, ToolStack, VideoEpisode } from '@/types/portfolio';
 import { compressImageFile } from '@/Utils/imageCompressor';
 
 interface ProjectsCreateProps {
@@ -12,6 +12,9 @@ interface ProjectsCreateProps {
 export default function ProjectsCreate({ categories, tools }: ProjectsCreateProps) {
     const [galleryUrlInput, setGalleryUrlInput] = useState('');
     const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+    const [episodeTitle, setEpisodeTitle] = useState('');
+    const [episodeUrl, setEpisodeUrl] = useState('');
+    const [episodeDuration, setEpisodeDuration] = useState('');
 
     const { data, setData, post, processing, errors } = useForm({
         category_id: categories[0]?.id || '',
@@ -41,11 +44,38 @@ export default function ProjectsCreate({ categories, tools }: ProjectsCreateProp
             client_name: '',
             completion_year: new Date().getFullYear().toString(),
             role: '',
+            episodes: [] as VideoEpisode[],
         },
     });
 
     const selectedCategory = categories.find((c) => c.id === Number(data.category_id));
     const isVideoMode = selectedCategory?.display_mode === 'video' || data.media_type === 'video_embed';
+
+    const handleAddEpisode = () => {
+        if (!episodeUrl.trim()) return;
+        const currentEpisodes = data.extra_meta.episodes || [];
+        const nextEpNumber = currentEpisodes.length + 1;
+        const newEpisode: VideoEpisode = {
+            title: episodeTitle.trim() || `Episode ${nextEpNumber}`,
+            video_url: episodeUrl.trim(),
+            duration: episodeDuration.trim() || undefined,
+        };
+        setData('extra_meta', {
+            ...data.extra_meta,
+            episodes: [...currentEpisodes, newEpisode],
+        });
+        setEpisodeTitle('');
+        setEpisodeUrl('');
+        setEpisodeDuration('');
+    };
+
+    const handleRemoveEpisode = (index: number) => {
+        const currentEpisodes = data.extra_meta.episodes || [];
+        setData('extra_meta', {
+            ...data.extra_meta,
+            episodes: currentEpisodes.filter((_, i) => i !== index),
+        });
+    };
 
     const handleToolToggle = (toolId: number) => {
         if (data.tool_ids.includes(toolId)) {
@@ -235,27 +265,104 @@ export default function ProjectsCreate({ categories, tools }: ProjectsCreateProp
                                             className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                                         >
                                             <option value="16:9">Lanskap 16:9 (YouTube, Standar Web)</option>
-                                            <option value="9:16">Vertikal 9:16 (Instagram Reels, TikTok, Shorts)</option>
+                                            <option value="9:16">Vertikal 9:16 (Shorts, TikTok, Instagram)</option>
                                         </select>
                                     </div>
                                 )}
                             </div>
 
                             {isVideoMode && (
-                                <div>
-                                    <label className="block text-xs font-mono font-semibold uppercase text-stone-700 tracking-wider mb-2">
-                                        Tautan Video (YouTube, Google Drive, atau Vimeo)
-                                    </label>
-                                    <input
-                                        type="url"
-                                        value={data.video_url}
-                                        onChange={(e) => setData('video_url', e.target.value)}
-                                        placeholder="https://www.youtube.com/watch?v=... atau https://drive.google.com/file/d/.../view"
-                                        className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
-                                    />
-                                    <p className="text-[11px] text-stone-500 mt-1 font-mono">
-                                        URL YouTube dan Google Drive otomatis diubah ke pemutar interaktif responsif.
-                                    </p>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-xs font-mono font-semibold uppercase text-stone-700 tracking-wider mb-2">
+                                            Tautan Video Utama atau Playlist YouTube
+                                        </label>
+                                        <input
+                                            type="url"
+                                            value={data.video_url}
+                                            onChange={(e) => setData('video_url', e.target.value)}
+                                            placeholder="https://www.youtube.com/watch?v=... atau https://www.youtube.com/playlist?list=..."
+                                            className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                                        />
+                                        <p className="text-[11px] text-stone-500 mt-1 font-mono">
+                                            Mendukung link video tunggal (YouTube, Shorts, Google Drive, Vimeo) maupun link Playlist YouTube.
+                                        </p>
+                                    </div>
+
+                                    {/* Multi-Episode / Playlist Builder for Recurring Video Series */}
+                                    <div className="p-4 rounded-xl bg-white border border-stone-200/90 space-y-3">
+                                        <div>
+                                            <h4 className="text-xs font-mono font-bold uppercase text-stone-800 tracking-wider">
+                                                Daftar Episode / Playlist Video Berseri (Opsional)
+                                            </h4>
+                                            <p className="text-[11px] text-stone-500 font-mono mt-0.5">
+                                                Punya proyek video berulang banyak episode (misal: serial Ustad Gaul)? Tambahkan daftar episodenya di bawah agar tersusun rapi dalam satu proyek.
+                                            </p>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                                            <input
+                                                type="text"
+                                                value={episodeTitle}
+                                                onChange={(e) => setEpisodeTitle(e.target.value)}
+                                                placeholder="Judul (misal: Episode 1 - Hijrah)"
+                                                className="sm:col-span-4 px-3 py-2 rounded-xl border border-stone-300 text-xs focus:border-amber-600 focus:outline-none"
+                                            />
+                                            <input
+                                                type="url"
+                                                value={episodeUrl}
+                                                onChange={(e) => setEpisodeUrl(e.target.value)}
+                                                placeholder="Link Video (YouTube / GDrive / Shorts)"
+                                                className="sm:col-span-5 px-3 py-2 rounded-xl border border-stone-300 text-xs focus:border-amber-600 focus:outline-none"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={episodeDuration}
+                                                onChange={(e) => setEpisodeDuration(e.target.value)}
+                                                placeholder="Durasi (03:15)"
+                                                className="sm:col-span-1 px-2.5 py-2 rounded-xl border border-stone-300 text-xs focus:border-amber-600 focus:outline-none"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={handleAddEpisode}
+                                                className="sm:col-span-2 px-3 py-2 text-xs font-mono font-semibold bg-stone-900 text-amber-400 rounded-xl hover:bg-stone-800 cursor-pointer transition-colors"
+                                            >
+                                                + Episode
+                                            </button>
+                                        </div>
+
+                                        {data.extra_meta.episodes && data.extra_meta.episodes.length > 0 && (
+                                            <div className="space-y-1.5 pt-1">
+                                                {data.extra_meta.episodes.map((ep, idx) => (
+                                                    <div
+                                                        key={idx}
+                                                        className="flex items-center justify-between text-xs font-mono bg-stone-50 px-3 py-2 rounded-lg border border-stone-200"
+                                                    >
+                                                        <div className="min-w-0 pr-3">
+                                                            <span className="font-bold text-stone-800">
+                                                                {idx + 1}. {ep.title}
+                                                            </span>
+                                                            {ep.duration && (
+                                                                <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">
+                                                                    {ep.duration}
+                                                                </span>
+                                                            )}
+                                                            <p className="text-[10px] text-stone-500 truncate mt-0.5">
+                                                                {ep.video_url}
+                                                            </p>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveEpisode(idx)}
+                                                            className="text-rose-600 hover:text-rose-800 font-bold text-xs px-2 py-1 cursor-pointer shrink-0"
+                                                        >
+                                                            Hapus
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             )}
                         </div>

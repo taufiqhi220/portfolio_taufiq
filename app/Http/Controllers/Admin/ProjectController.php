@@ -76,6 +76,11 @@ class ProjectController extends Controller
             $thumbnailPath = MediaStorage::store($request->file('thumbnail_file'), 'thumbnails');
         }
 
+        $videoUrl = $validated['video_url'] ?? null;
+        if (empty($videoUrl) && !empty($validated['extra_meta']['episodes'][0]['video_url'])) {
+            $videoUrl = $validated['extra_meta']['episodes'][0]['video_url'];
+        }
+
         $project = Project::create([
             'category_id' => $validated['category_id'],
             'title' => $validated['title'],
@@ -86,7 +91,7 @@ class ProjectController extends Controller
             'problem_statement' => $validated['problem_statement'] ?? null,
             'solution' => $validated['solution'] ?? null,
             'media_type' => $validated['media_type'],
-            'video_url' => $validated['video_url'] ?? null,
+            'video_url' => $videoUrl,
             'thumbnail_path' => $thumbnailPath,
             'live_url' => $validated['live_url'] ?? null,
             'github_url' => $validated['github_url'] ?? null,
@@ -181,6 +186,11 @@ class ProjectController extends Controller
             $thumbnailPath = $validated['thumbnail_url'];
         }
 
+        $videoUrl = $validated['video_url'] ?? null;
+        if (empty($videoUrl) && !empty($validated['extra_meta']['episodes'][0]['video_url'])) {
+            $videoUrl = $validated['extra_meta']['episodes'][0]['video_url'];
+        }
+
         $project->update([
             'category_id' => $validated['category_id'],
             'title' => $validated['title'],
@@ -191,7 +201,7 @@ class ProjectController extends Controller
             'problem_statement' => $validated['problem_statement'] ?? null,
             'solution' => $validated['solution'] ?? null,
             'media_type' => $validated['media_type'],
-            'video_url' => $validated['video_url'] ?? null,
+            'video_url' => $videoUrl,
             'thumbnail_path' => $thumbnailPath,
             'live_url' => $validated['live_url'] ?? null,
             'github_url' => $validated['github_url'] ?? null,

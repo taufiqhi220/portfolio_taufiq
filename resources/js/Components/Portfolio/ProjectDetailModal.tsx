@@ -293,6 +293,37 @@ export default function ProjectDetailModal({ project, onClose, onPlayVideo }: Pr
                         </div>
                     )}
 
+                    {/* Daftar Episode / Playlist Video jika ada */}
+                    {project.extra_meta?.episodes && project.extra_meta.episodes.length > 0 && (
+                        <div>
+                            <h4 className="text-[11px] uppercase tracking-wider font-mono font-bold text-stone-500 mb-2.5">
+                                Daftar Episode / Playlist ({project.extra_meta.episodes.length} Video)
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {project.extra_meta.episodes.map((ep, idx) => (
+                                    <button
+                                        key={idx}
+                                        type="button"
+                                        onClick={() => {
+                                            if (onPlayVideo) {
+                                                onClose();
+                                                onPlayVideo(project);
+                                            }
+                                        }}
+                                        className="flex items-center justify-between p-3 rounded-xl bg-stone-50 hover:bg-amber-50/70 border border-stone-200 hover:border-amber-300 text-left text-xs font-mono transition-all cursor-pointer"
+                                    >
+                                        <span className="font-semibold text-stone-800 truncate pr-2">
+                                            {idx + 1}. {ep.title || `Episode ${idx + 1}`}
+                                        </span>
+                                        <span className="text-[10px] text-amber-700 font-bold shrink-0">
+                                            ▶ {ep.duration || 'Putar'}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Peran & Konteks Tambahan */}
                     {project.extra_meta?.role && (
                         <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200 flex items-center justify-between text-xs font-mono">
@@ -306,7 +337,7 @@ export default function ProjectDetailModal({ project, onClose, onPlayVideo }: Pr
                 <div className="p-4 sm:p-5 border-t border-stone-200/80 bg-stone-50/90 flex flex-wrap items-center justify-between gap-3 shrink-0">
                     <div className="flex flex-wrap items-center gap-2.5">
                         {/* Play Video Button */}
-                        {isVideo && project.video_url && onPlayVideo && (
+                        {isVideo && (project.video_url || (project.extra_meta?.episodes && project.extra_meta.episodes.length > 0)) && onPlayVideo && (
                             <button
                                 type="button"
                                 onClick={() => {
@@ -318,7 +349,11 @@ export default function ProjectDetailModal({ project, onClose, onPlayVideo }: Pr
                                 <svg className="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M8 5v14l11-7z" />
                                 </svg>
-                                <span>Putar Video Showcase</span>
+                                <span>
+                                    {project.extra_meta?.episodes && project.extra_meta.episodes.length > 0
+                                        ? `Putar Playlist (${project.extra_meta.episodes.length} Episode)`
+                                        : 'Putar Video Karya'}
+                                </span>
                             </button>
                         )}
 

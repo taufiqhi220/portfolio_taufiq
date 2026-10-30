@@ -27,6 +27,12 @@ export interface ProjectImage {
     sort_order: number;
 }
 
+export interface VideoEpisode {
+    title: string;
+    video_url: string;
+    duration?: string;
+}
+
 export interface ProjectMeta {
     figma_url?: string;
     docs_url?: string;
@@ -36,6 +42,7 @@ export interface ProjectMeta {
     completion_year?: string;
     role?: string;
     duration?: string;
+    episodes?: VideoEpisode[];
     [key: string]: any;
 }
 
