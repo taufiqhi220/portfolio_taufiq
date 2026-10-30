@@ -29,7 +29,7 @@ class ProfileSettingTest extends TestCase
             'headline' => 'Web Developer & Video Editor',
             'location' => 'Indonesia (WITA / UTC+8)',
             'bio' => 'Custom bio text written directly by user.',
-            'email' => 'taufiq@custom.test',
+            'github_url' => 'https://github.com/taufiqhi220',
             'is_available_for_work' => true,
         ]);
 
@@ -37,7 +37,7 @@ class ProfileSettingTest extends TestCase
         $this->assertDatabaseHas('profile_settings', [
             'location' => 'Indonesia (WITA / UTC+8)',
             'bio' => 'Custom bio text written directly by user.',
-            'email' => 'taufiq@custom.test',
+            'github_url' => 'https://github.com/taufiqhi220',
         ]);
     }
 }

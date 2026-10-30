@@ -14,12 +14,10 @@ return new class extends Migration
             $table->string('headline')->nullable();
             $table->text('bio')->nullable();
             $table->string('avatar_path')->nullable();
-            $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('location')->nullable();
             $table->string('github_url')->nullable();
             $table->string('linkedin_url')->nullable();
-            $table->string('youtube_url')->nullable();
             $table->string('instagram_url')->nullable();
             $table->string('resume_url')->nullable();
             $table->boolean('is_available_for_work')->default(true);

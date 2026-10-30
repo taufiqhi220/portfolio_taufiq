@@ -21,30 +21,26 @@ export default function ToolsArsenal({ tools = {}, profile }: ToolsArsenalProps)
                     <div className="lg:col-span-5 space-y-6">
                         <Reveal delay={50}>
                             <div className="font-mono text-xs text-stone-500 uppercase tracking-widest mb-3">
-                                03 / Tentang &amp; Pendekatan
+                                03 / Profil
                             </div>
 
                             <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-stone-900 tracking-tight leading-tight mb-4">
-                                Rekayasa Web &amp; Visual Storytelling.
+                                Tentang Saya
                             </h2>
 
-                            <p className="text-base text-stone-600 leading-relaxed mb-4">
+                            <p className="text-base text-stone-600 leading-relaxed mb-6">
                                 {profile?.bio ||
-                                    'Menggabungkan ketelitian arsitektur kode dengan penyampaian visual yang komunikatif. Di ranah web, saya fokus pada ekosistem Laravel, React, dan PostgreSQL. Di ranah multimedia, fokus pada ritme editing, tata warna sinematik, dan motion graphics.'}
-                            </p>
-
-                            <p className="text-sm text-stone-600 leading-relaxed mb-6">
-                                Setiap proyek dikerjakan dengan tujuan yang jelas: sistem yang tangguh saat digunakan dan karya visual yang meninggalkan kesan bermakna bagi penontonnya.
+                                    'Mengembangkan aplikasi web dan mengerjakan editing video serta konten multimedia.'}
                             </p>
 
                             <div className="p-4 rounded-xl bg-white/75 backdrop-blur-md border border-stone-300/60 shadow-2xs space-y-2 text-xs font-mono text-stone-600">
                                 <div className="flex items-center gap-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
-                                    <span>Spesialisasi: Full-Stack Web &amp; Video Post-Production</span>
+                                    <span>Fokus: {profile?.headline || 'Web Development & Video Editing'}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-stone-400" />
-                                    <span>Prinsip: Fungsional, terstruktur, dan berkarakter</span>
+                                    <span>Lokasi: {profile?.location || 'Indonesia (WITA / UTC+8)'}</span>
                                 </div>
                             </div>
                         </Reveal>
@@ -54,7 +50,7 @@ export default function ToolsArsenal({ tools = {}, profile }: ToolsArsenalProps)
                     <div className="lg:col-span-7 lg:pl-4 space-y-8">
                         <div>
                             <span className="font-mono text-xs text-stone-500 uppercase tracking-widest block mb-4">
-                                Toolkit &amp; Perangkat Kerja Harian
+                                Tools &amp; Software yang Digunakan
                             </span>
                         </div>
 
@@ -63,9 +59,8 @@ export default function ToolsArsenal({ tools = {}, profile }: ToolsArsenalProps)
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                     <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-stone-800">
-                                        01 / Video Editing &amp; Motion
+                                        01 / Video Editing &amp; Desain
                                     </h3>
-                                    <span className="text-[11px] font-mono text-stone-400">Post-Production</span>
                                 </div>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                                     {creativeTools.map((t) => (
@@ -86,9 +81,8 @@ export default function ToolsArsenal({ tools = {}, profile }: ToolsArsenalProps)
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                     <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-stone-800">
-                                        02 / Web &amp; Backend Engineering
+                                        02 / Web Development
                                     </h3>
-                                    <span className="text-[11px] font-mono text-stone-400">Architecture &amp; UI</span>
                                 </div>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                                     {webTools.map((t) => (
@@ -109,9 +103,8 @@ export default function ToolsArsenal({ tools = {}, profile }: ToolsArsenalProps)
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                     <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-stone-800">
-                                        03 / Kolaborasi &amp; Alur Kerja
+                                        03 / Tools Pendukung
                                     </h3>
-                                    <span className="text-[11px] font-mono text-stone-400">Workflow</span>
                                 </div>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                                     {generalTools.map((t) => (

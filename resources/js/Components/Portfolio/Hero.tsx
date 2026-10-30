@@ -72,58 +72,13 @@ export default function Hero({ profile, projects = [], onPlayVideo, onViewDetail
                             </h1>
 
                             <p className="text-lg sm:text-2xl font-heading text-stone-800 font-semibold leading-snug max-w-2xl mb-3 sm:mb-4">
-                                {profile.headline || 'Web Engineering & Video Post-Production'}
+                                {profile.headline || 'Web Developer & Video Editor'}
                             </p>
 
-                            <p className="text-sm sm:text-base text-stone-700 font-normal leading-relaxed max-w-2xl mb-6 sm:mb-8">
+                            <p className="text-sm sm:text-base text-stone-700 font-normal leading-relaxed max-w-2xl mb-7 sm:mb-9">
                                 {profile.bio ||
-                                    'Membangun sistem web tangguh berkinerja tinggi dengan Laravel & React, serta memproduksi konten video sinematik dinamis melalui teknik kinetic motion, tata suara, dan color grading terukur.'}
+                                    'Mengembangkan aplikasi web serta mengerjakan editing video dan konten multimedia.'}
                             </p>
-
-                            {/* Dual Discipline Focus Cards (Replaces the vanity stats box with concrete craft) */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-7 sm:mb-9 max-w-2xl">
-                                {/* Card 1: Web Engineering */}
-                                <div className="p-4 rounded-xl bg-white/75 hover:bg-white/95 backdrop-blur-md border border-stone-300/70 hover:border-amber-500/50 shadow-2xs transition-all duration-300 flex flex-col justify-between">
-                                    <div>
-                                        <div className="flex items-center justify-between mb-1.5">
-                                            <span className="font-mono text-[10px] uppercase tracking-wider text-amber-800 font-bold flex items-center gap-1.5">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
-                                                Web Engineering
-                                            </span>
-                                            <span className="text-[10px] font-mono text-stone-400">Architecture</span>
-                                        </div>
-                                        <p className="text-xs text-stone-600 leading-relaxed mb-3">
-                                            Sistem informasi, portal administrasi terpadu, dan RESTful API berkinerja tinggi dengan database relasional terstruktur.
-                                        </p>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 pt-2 border-t border-stone-200/60 font-mono text-[10px] text-stone-700">
-                                        <span className="px-1.5 py-0.5 rounded bg-stone-100 border border-stone-200/80">Laravel</span>
-                                        <span className="px-1.5 py-0.5 rounded bg-stone-100 border border-stone-200/80">React</span>
-                                        <span className="px-1.5 py-0.5 rounded bg-stone-100 border border-stone-200/80">PostgreSQL</span>
-                                    </div>
-                                </div>
-
-                                {/* Card 2: Video Post-Production */}
-                                <div className="p-4 rounded-xl bg-white/75 hover:bg-white/95 backdrop-blur-md border border-stone-300/70 hover:border-amber-500/50 shadow-2xs transition-all duration-300 flex flex-col justify-between">
-                                    <div>
-                                        <div className="flex items-center justify-between mb-1.5">
-                                            <span className="font-mono text-[10px] uppercase tracking-wider text-stone-800 font-bold flex items-center gap-1.5">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-stone-600" />
-                                                Video Post-Production
-                                            </span>
-                                            <span className="text-[10px] font-mono text-stone-400">Cinematics</span>
-                                        </div>
-                                        <p className="text-xs text-stone-600 leading-relaxed mb-3">
-                                            Produksi video promosi, kinetic typography, motion graphics, sound design dinamis, dan color grading berton sinematik.
-                                        </p>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 pt-2 border-t border-stone-200/60 font-mono text-[10px] text-stone-700">
-                                        <span className="px-1.5 py-0.5 rounded bg-stone-100 border border-stone-200/80">Premiere</span>
-                                        <span className="px-1.5 py-0.5 rounded bg-stone-100 border border-stone-200/80">After Effects</span>
-                                        <span className="px-1.5 py-0.5 rounded bg-stone-100 border border-stone-200/80">DaVinci</span>
-                                    </div>
-                                </div>
-                            </div>
 
                             {/* Direct Action Links */}
                             <div className="flex flex-wrap items-center gap-3 text-sm">

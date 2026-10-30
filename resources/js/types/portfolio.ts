@@ -76,12 +76,10 @@ export interface Profile {
     headline: string;
     bio: string;
     avatar_path?: string | null;
-    email?: string | null;
     phone?: string | null;
     location?: string | null;
     github_url?: string | null;
     linkedin_url?: string | null;
-    youtube_url?: string | null;
     instagram_url?: string | null;
     resume_url?: string | null;
     is_available_for_work: boolean;

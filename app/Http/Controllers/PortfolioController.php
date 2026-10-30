@@ -26,6 +26,7 @@ class PortfolioController extends Controller
         ]);
 
         try {
+            ProfileSetting::dropDeprecatedColumnsIfNeeded();
             $profile = ProfileSetting::first() ?? $defaultProfile;
 
             $categories = Category::where('is_active', true)

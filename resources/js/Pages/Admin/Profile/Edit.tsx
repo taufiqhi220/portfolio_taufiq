@@ -13,10 +13,8 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
         headline: profile.headline || '',
         bio: profile.bio || '',
         location: profile.location || 'Indonesia (WITA / UTC+8)',
-        email: profile.email || '',
         github_url: profile.github_url || '',
         linkedin_url: profile.linkedin_url || '',
-        youtube_url: profile.youtube_url || '',
         resume_url: profile.resume_url || '',
         is_available_for_work: profile.is_available_for_work ?? true,
     });
@@ -113,29 +111,11 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
                                 {errors.bio && <p className="text-xs text-rose-500 mt-1">{errors.bio}</p>}
                             </div>
 
-                            <div>
-                                <label htmlFor="email" className="block text-xs font-mono font-semibold uppercase text-stone-700 tracking-wider mb-2">
-                                    Email Kontak Profesional
-                                </label>
-                                <input
-                                    id="email"
-                                    type="email"
-                                    value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
-                                    placeholder="nama@domain.com"
-                                    className="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm text-stone-900 focus:outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 transition-all"
-                                />
-                                {errors.email && <p className="text-xs text-rose-500 mt-1">{errors.email}</p>}
-                                <p className="text-[11px] font-mono text-stone-400 mt-1">
-                                    Saluran komunikasi utama untuk penawaran proyek dan kolaborasi formal.
-                                </p>
-                            </div>
-
                             <div className="border-t border-stone-200/80 pt-6">
                                 <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-stone-900 mb-4">
                                     Tautan Portofolio Profesional &amp; Dokumen
                                 </h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label htmlFor="github_url" className="block text-xs font-mono text-stone-600 mb-1">GitHub URL</label>
                                         <input
@@ -155,17 +135,6 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
                                             value={data.linkedin_url}
                                             onChange={(e) => setData('linkedin_url', e.target.value)}
                                             placeholder="https://linkedin.com/in/..."
-                                            className="w-full px-3.5 py-2 border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 transition-all"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="youtube_url" className="block text-xs font-mono text-stone-600 mb-1">YouTube URL</label>
-                                        <input
-                                            id="youtube_url"
-                                            type="url"
-                                            value={data.youtube_url}
-                                            onChange={(e) => setData('youtube_url', e.target.value)}
-                                            placeholder="https://youtube.com/@..."
                                             className="w-full px-3.5 py-2 border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 transition-all"
                                         />
                                     </div>

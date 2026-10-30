@@ -136,12 +136,10 @@ CREATE TABLE IF NOT EXISTS profile_settings (
     headline VARCHAR(255) NULL,
     bio TEXT NULL,
     avatar_path VARCHAR(255) NULL,
-    email VARCHAR(255) NULL,
     phone VARCHAR(255) NULL,
     location VARCHAR(255) NULL,
     github_url VARCHAR(255) NULL,
     linkedin_url VARCHAR(255) NULL,
-    youtube_url VARCHAR(255) NULL,
     instagram_url VARCHAR(255) NULL,
     resume_url VARCHAR(255) NULL,
     is_available_for_work BOOLEAN DEFAULT true,
@@ -190,18 +188,16 @@ VALUES (1, 'Taufiq Hidayat', 'taufiq@portfolio.test', '$2y$12$5gnNSJPsa7aiImceGJ
 ON CONFLICT (email) DO NOTHING;
 
 -- Profile Settings
-INSERT INTO profile_settings (id, full_name, headline, bio, email, phone, location, github_url, linkedin_url, youtube_url, instagram_url, resume_url, is_available_for_work, created_at, updated_at)
+INSERT INTO profile_settings (id, full_name, headline, bio, phone, location, github_url, linkedin_url, instagram_url, resume_url, is_available_for_work, created_at, updated_at)
 VALUES (
     1,
     'Taufiq Hidayat',
-    'Web Developer & Creative Video Editor',
+    'Web Developer & Video Editor',
     'Mengembangkan aplikasi web dengan Laravel & React, serta mengerjakan editing video dan motion graphic.',
-    'taufiq@portfolio.test',
     '+62 812-3456-7890',
     'Indonesia (WITA / UTC+8)',
     'https://github.com/taufiqhidayat',
     'https://linkedin.com/in/taufiqhidayat',
-    'https://youtube.com/@taufiqhidayat',
     'https://instagram.com/taufiqhidayat',
     '#',
     true,

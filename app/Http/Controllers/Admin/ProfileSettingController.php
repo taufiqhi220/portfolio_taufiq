@@ -13,6 +13,8 @@ class ProfileSettingController extends Controller
 {
     public function edit(): Response
     {
+        ProfileSetting::dropDeprecatedColumnsIfNeeded();
+
         $profile = ProfileSetting::firstOrCreate(
             ['id' => 1],
             [
@@ -20,7 +22,6 @@ class ProfileSettingController extends Controller
                 'headline' => 'Web Developer & Video Editor',
                 'location' => 'Indonesia (WITA / UTC+8)',
                 'bio' => 'Mengembangkan aplikasi web dengan Laravel & React, serta mengerjakan editing video dan motion graphic.',
-                'email' => 'taufiq@portfolio.test',
                 'is_available_for_work' => true,
             ]
         );
@@ -32,16 +33,16 @@ class ProfileSettingController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
+        ProfileSetting::dropDeprecatedColumnsIfNeeded();
+
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'headline' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
             'location' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:50',
             'github_url' => 'nullable|url|max:255',
             'linkedin_url' => 'nullable|url|max:255',
-            'youtube_url' => 'nullable|url|max:255',
             'instagram_url' => 'nullable|url|max:255',
             'resume_url' => 'nullable|string|max:500',
             'is_available_for_work' => 'boolean',
