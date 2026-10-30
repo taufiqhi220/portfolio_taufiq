@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Category, Project, ToolStack } from '@/types/portfolio';
+import { compressImageFile } from '@/Utils/imageCompressor';
 
 interface ProjectsEditProps {
     project: Project;
@@ -12,6 +13,7 @@ interface ProjectsEditProps {
 export default function ProjectsEdit({ project, categories, tools }: ProjectsEditProps) {
     const initialToolIds = project.tools ? project.tools.map((t) => t.id) : [];
     const [galleryUrlInput, setGalleryUrlInput] = useState('');
+    const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(project.thumbnail_path || null);
 
     const { data, setData, post, processing, errors } = useForm({
         _method: 'PUT',
@@ -78,7 +80,9 @@ export default function ProjectsEdit({ project, categories, tools }: ProjectsEdi
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('admin.projects.update', project.id));
+        post(route('admin.projects.update', project.id), {
+            forceFormData: true,
+        });
     };
 
     return (
@@ -389,19 +393,30 @@ export default function ProjectsEdit({ project, categories, tools }: ProjectsEdi
                                 <label className="block text-xs font-mono font-semibold uppercase text-stone-700 tracking-wider mb-2">
                                     Ganti Thumbnail Utama
                                 </label>
-                                {project.thumbnail_path && (
+                                {thumbnailPreview && (
                                     <div className="mb-3">
                                         <img
-                                            src={project.thumbnail_path}
+                                            src={thumbnailPreview}
                                             alt={project.title}
-                                            className="h-20 w-36 object-cover rounded-xl border border-stone-200"
+                                            className="h-24 w-40 object-cover rounded-xl border border-stone-200 shadow-2xs"
+                                            onError={() => setThumbnailPreview(null)}
                                         />
                                     </div>
                                 )}
                                 <input
                                     type="file"
                                     accept="image/*"
-                                    onChange={(e) => setData('thumbnail_file', e.target.files ? e.target.files[0] : null)}
+                                    onChange={async (e) => {
+                                        const rawFile = e.target.files ? e.target.files[0] : null;
+                                        if (rawFile) {
+                                            setThumbnailPreview(URL.createObjectURL(rawFile));
+                                            const optimized = await compressImageFile(rawFile, 1600, 0.85);
+                                            setData('thumbnail_file', optimized);
+                                        } else {
+                                            setThumbnailPreview(project.thumbnail_path || null);
+                                            setData('thumbnail_file', null);
+                                        }
+                                    }}
                                     className="w-full text-xs text-stone-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-stone-900 file:text-amber-400 hover:file:bg-stone-800 transition-all cursor-pointer"
                                 />
                                 {errors.thumbnail_file && <p className="text-xs text-rose-500 mt-1">{errors.thumbnail_file}</p>}
@@ -414,7 +429,12 @@ export default function ProjectsEdit({ project, categories, tools }: ProjectsEdi
                                 <input
                                     type="text"
                                     value={data.thumbnail_url}
-                                    onChange={(e) => setData('thumbnail_url', e.target.value)}
+                                    onChange={(e) => {
+                                        setData('thumbnail_url', e.target.value);
+                                        if (!data.thumbnail_file) {
+                                            setThumbnailPreview(e.target.value || null);
+                                        }
+                                    }}
                                     placeholder="https://.../thumbnail.jpg"
                                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                                 />
@@ -476,9 +496,12 @@ export default function ProjectsEdit({ project, categories, tools }: ProjectsEdi
                                         type="file"
                                         multiple
                                         accept="image/*"
-                                        onChange={(e) => {
-                                            const files = e.target.files ? Array.from(e.target.files) : [];
-                                            setData('gallery_files', files);
+                                        onChange={async (e) => {
+                                            const rawFiles = e.target.files ? Array.from(e.target.files) : [];
+                                            const optimizedFiles = await Promise.all(
+                                                rawFiles.map((f) => compressImageFile(f, 1600, 0.85))
+                                            );
+                                            setData('gallery_files', optimizedFiles);
                                         }}
                                         className="w-full text-xs text-stone-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-stone-900 file:text-amber-400 hover:file:bg-stone-800 cursor-pointer"
                                     />

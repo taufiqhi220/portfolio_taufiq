@@ -135,4 +135,34 @@ class PortfolioTest extends TestCase
         $this->assertDatabaseHas('project_images', ['id' => $img2->id]);
         $this->assertCount(2, $project->fresh()->images);
     }
+
+    public function test_uploaded_media_persists_in_database_and_serves_when_local_disk_is_cleared(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+        $user = User::first() ?? User::factory()->create();
+
+        $svgContent = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>';
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('custom-logo.svg', $svgContent);
+
+        $response = $this->actingAs($user)->post('/admin/tools', [
+            'name' => 'Custom SVG Tool',
+            'group_type' => 'web_stack',
+            'icon_file' => $file,
+        ]);
+
+        $response->assertRedirect('/admin/tools');
+
+        $tool = \App\Models\ToolStack::where('name', 'Custom SVG Tool')->first();
+        $this->assertNotNull($tool);
+        $this->assertStringStartsWith('/storage/tools/', $tool->icon_name);
+
+        // Simulate Vercel serverless ephemeral /tmp eviction by deleting the physical file on disk
+        $relativePath = ltrim(substr($tool->icon_name, strlen('/storage/')), '/');
+        \Illuminate\Support\Facades\Storage::disk('public')->delete($relativePath);
+
+        // Request the file via /storage/{path} route; it should still be served from PostgreSQL/DB cache
+        $serveResponse = $this->get($tool->icon_name);
+        $serveResponse->assertStatus(200);
+        $this->assertEquals($svgContent, $serveResponse->getContent());
+    }
 }

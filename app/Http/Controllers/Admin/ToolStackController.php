@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ToolStack;
+use App\Support\MediaStorage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -37,15 +37,14 @@ class ToolStackController extends Controller
             'slug' => ['nullable', 'string', 'max:100', 'unique:tools_stacks,slug'],
             'group_type' => ['required', 'in:creative_software,web_stack,general_tools'],
             'sort_order' => ['nullable', 'integer'],
-            'icon_file' => ['nullable', 'file', 'mimes:png,jpg,jpeg,svg,webp', 'max:5120'],
+            'icon_file' => ['nullable', 'file', 'mimes:png,jpg,jpeg,svg,webp,gif,avif', 'max:10240'],
             'icon_url_input' => ['nullable', 'string', 'max:500'],
         ]);
 
         $iconName = null;
 
-        if ($request->hasFile('icon_file')) {
-            $path = $request->file('icon_file')->store('tools', 'public');
-            $iconName = '/storage/' . $path;
+        if ($request->hasFile('icon_file') && $request->file('icon_file')->isValid()) {
+            $iconName = MediaStorage::store($request->file('icon_file'), 'tools');
         } elseif (!empty($validated['icon_url_input'])) {
             $iconName = trim($validated['icon_url_input']);
         }
@@ -75,7 +74,7 @@ class ToolStackController extends Controller
             'slug' => ['nullable', 'string', 'max:100', 'unique:tools_stacks,slug,' . $tool->id],
             'group_type' => ['required', 'in:creative_software,web_stack,general_tools'],
             'sort_order' => ['nullable', 'integer'],
-            'icon_file' => ['nullable', 'file', 'mimes:png,jpg,jpeg,svg,webp', 'max:5120'],
+            'icon_file' => ['nullable', 'file', 'mimes:png,jpg,jpeg,svg,webp,gif,avif', 'max:10240'],
             'icon_url_input' => ['nullable', 'string', 'max:500'],
             'remove_icon' => ['nullable', 'boolean'],
         ]);
@@ -83,18 +82,11 @@ class ToolStackController extends Controller
         $iconName = $tool->icon_name;
 
         if (!empty($validated['remove_icon'])) {
-            if ($tool->icon_name && str_starts_with($tool->icon_name, '/storage/tools/')) {
-                $relativeStoragePath = str_replace('/storage/', '', $tool->icon_name);
-                Storage::disk('public')->delete($relativeStoragePath);
-            }
+            MediaStorage::delete($tool->icon_name);
             $iconName = null;
-        } elseif ($request->hasFile('icon_file')) {
-            if ($tool->icon_name && str_starts_with($tool->icon_name, '/storage/tools/')) {
-                $relativeStoragePath = str_replace('/storage/', '', $tool->icon_name);
-                Storage::disk('public')->delete($relativeStoragePath);
-            }
-            $path = $request->file('icon_file')->store('tools', 'public');
-            $iconName = '/storage/' . $path;
+        } elseif ($request->hasFile('icon_file') && $request->file('icon_file')->isValid()) {
+            MediaStorage::delete($tool->icon_name);
+            $iconName = MediaStorage::store($request->file('icon_file'), 'tools');
         } elseif (isset($validated['icon_url_input']) && trim($validated['icon_url_input']) !== '') {
             $iconName = trim($validated['icon_url_input']);
         }
@@ -127,6 +119,7 @@ class ToolStackController extends Controller
             return redirect()->route('admin.tools.index')->with('warning', 'Tech stack tidak ditemukan atau sudah dihapus sebelumnya.');
         }
 
+        MediaStorage::delete($model->icon_name);
         $model->projects()->detach();
         $model->delete();
 

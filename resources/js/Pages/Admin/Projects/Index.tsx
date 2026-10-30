@@ -81,6 +81,9 @@ export default function ProjectsIndex({ projects }: ProjectsIndexProps) {
                                                             src={p.thumbnail_path}
                                                             alt={p.title}
                                                             className="w-full h-full object-cover"
+                                                            onError={(e) => {
+                                                                e.currentTarget.style.display = 'none';
+                                                            }}
                                                         />
                                                     ) : (
                                                         <span className="font-mono text-[10px] font-bold text-amber-400">

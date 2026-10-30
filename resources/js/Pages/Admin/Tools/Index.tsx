@@ -4,6 +4,7 @@ import { Head, router, useForm } from '@inertiajs/react';
 import { ToolStack } from '@/types/portfolio';
 import ToolIcon from '@/Components/Portfolio/ToolIcon';
 import { confirmDialog } from '@/Utils/alert';
+import { compressImageFile } from '@/Utils/imageCompressor';
 
 interface ToolsIndexProps {
     tools: ToolStack[];
@@ -373,6 +374,7 @@ export default function ToolsIndex({ tools }: ToolsIndexProps) {
                                                     src={previewImage}
                                                     alt="Icon Preview"
                                                     className="w-full h-full object-contain"
+                                                    onError={() => setPreviewImage(null)}
                                                 />
                                             ) : (
                                                 <span className="font-mono text-xs text-stone-400 font-bold">
@@ -421,16 +423,17 @@ export default function ToolsIndex({ tools }: ToolsIndexProps) {
                                         <input
                                             ref={fileInputRef}
                                             type="file"
-                                            accept="image/png,image/svg+xml,image/webp,image/jpeg"
-                                            onChange={(e) => {
-                                                const file = e.target.files ? e.target.files[0] : null;
-                                                if (file) {
-                                                    const url = URL.createObjectURL(file);
+                                            accept="image/png,image/svg+xml,image/webp,image/jpeg,image/gif"
+                                            onChange={async (e) => {
+                                                const rawFile = e.target.files ? e.target.files[0] : null;
+                                                if (rawFile) {
+                                                    const url = URL.createObjectURL(rawFile);
                                                     setPreviewImage(url);
+                                                    const optimizedFile = await compressImageFile(rawFile, 512, 0.9);
                                                     if (editingTool) {
-                                                        editForm.setData('icon_file', file);
+                                                        editForm.setData('icon_file', optimizedFile);
                                                     } else {
-                                                        createForm.setData('icon_file', file);
+                                                        createForm.setData('icon_file', optimizedFile);
                                                     }
                                                 }
                                             }}

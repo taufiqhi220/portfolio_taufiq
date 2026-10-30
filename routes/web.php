@@ -12,13 +12,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PortfolioController::class, 'index'])->name('home');
 Route::post('/contact', [PortfolioController::class, 'submitInquiry'])->name('contact.submit');
 
-// Serve uploaded storage files directly on serverless hosting
+// Serve uploaded storage files directly on serverless hosting (with PostgreSQL fallback)
 Route::get('/storage/{path}', function (string $path) {
-    $filePath = storage_path('app/public/' . $path);
-    if (!file_exists($filePath)) {
-        abort(404);
-    }
-    return response()->file($filePath);
+    return \App\Support\MediaStorage::serve($path);
 })->where('path', '.*')->name('storage.local');
 
 // Admin Protected Routes
@@ -28,10 +24,12 @@ Route::middleware(['auth'])->group(function () {
     // Admin Resource Routes
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('projects', ProjectController::class);
+        Route::post('projects/{project}', [ProjectController::class, 'update']);
         Route::post('projects/{project}/delete', [ProjectController::class, 'destroy'])->name('projects.destroy.post');
         Route::resource('categories', CategoryController::class)->except(['create', 'show', 'edit']);
         Route::post('categories/{category}/delete', [CategoryController::class, 'destroy'])->name('categories.destroy.post');
         Route::resource('tools', \App\Http\Controllers\Admin\ToolStackController::class)->except(['create', 'show', 'edit']);
+        Route::post('tools/{tool}', [\App\Http\Controllers\Admin\ToolStackController::class, 'update']);
         Route::post('tools/{tool}/delete', [\App\Http\Controllers\Admin\ToolStackController::class, 'destroy'])->name('tools.destroy.post');
 
         // Inquiries

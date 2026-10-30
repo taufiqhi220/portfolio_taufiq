@@ -7,8 +7,8 @@ use App\Models\Category;
 use App\Models\Project;
 use App\Models\ProjectImage;
 use App\Models\ToolStack;
+use App\Support\MediaStorage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -51,7 +51,7 @@ class ProjectController extends Controller
             'solution' => ['nullable', 'string'],
             'media_type' => ['required', 'in:image,video_embed,video_file'],
             'video_url' => ['nullable', 'string', 'max:500'],
-            'thumbnail_file' => ['nullable', 'image', 'max:5120'],
+            'thumbnail_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,gif,svg,bmp,avif', 'max:10240'],
             'thumbnail_url' => ['nullable', 'string', 'max:500'],
             'live_url' => ['nullable', 'string', 'max:500'],
             'github_url' => ['nullable', 'string', 'max:500'],
@@ -61,7 +61,7 @@ class ProjectController extends Controller
             'tool_ids' => ['array'],
             'tool_ids.*' => ['exists:tools_stacks,id'],
             'gallery_files' => ['nullable', 'array'],
-            'gallery_files.*' => ['nullable', 'image', 'max:5120'],
+            'gallery_files.*' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,gif,svg,bmp,avif', 'max:10240'],
             'gallery_urls' => ['nullable', 'array'],
             'gallery_urls.*' => ['nullable', 'string', 'max:500'],
         ]);
@@ -72,9 +72,8 @@ class ProjectController extends Controller
 
         // Handle thumbnail upload or direct URL
         $thumbnailPath = $validated['thumbnail_url'] ?? null;
-        if ($request->hasFile('thumbnail_file')) {
-            $path = $request->file('thumbnail_file')->store('thumbnails', 'public');
-            $thumbnailPath = '/storage/' . $path;
+        if ($request->hasFile('thumbnail_file') && $request->file('thumbnail_file')->isValid()) {
+            $thumbnailPath = MediaStorage::store($request->file('thumbnail_file'), 'thumbnails');
         }
 
         $project = Project::create([
@@ -105,10 +104,10 @@ class ProjectController extends Controller
         if ($request->hasFile('gallery_files')) {
             foreach ($request->file('gallery_files') as $file) {
                 if ($file && $file->isValid()) {
-                    $path = $file->store('gallery', 'public');
+                    $storedPath = MediaStorage::store($file, 'gallery');
                     ProjectImage::create([
                         'project_id' => $project->id,
-                        'image_path' => '/storage/' . $path,
+                        'image_path' => $storedPath,
                         'sort_order' => $imageOrder++,
                     ]);
                 }
@@ -157,7 +156,7 @@ class ProjectController extends Controller
             'solution' => ['nullable', 'string'],
             'media_type' => ['required', 'in:image,video_embed,video_file'],
             'video_url' => ['nullable', 'string', 'max:500'],
-            'thumbnail_file' => ['nullable', 'image', 'max:5120'],
+            'thumbnail_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,gif,svg,bmp,avif', 'max:10240'],
             'thumbnail_url' => ['nullable', 'string', 'max:500'],
             'live_url' => ['nullable', 'string', 'max:500'],
             'github_url' => ['nullable', 'string', 'max:500'],
@@ -167,7 +166,7 @@ class ProjectController extends Controller
             'tool_ids' => ['array'],
             'tool_ids.*' => ['exists:tools_stacks,id'],
             'gallery_files' => ['nullable', 'array'],
-            'gallery_files.*' => ['nullable', 'image', 'max:5120'],
+            'gallery_files.*' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,gif,svg,bmp,avif', 'max:10240'],
             'gallery_urls' => ['nullable', 'array'],
             'gallery_urls.*' => ['nullable', 'string', 'max:500'],
             'deleted_image_ids' => ['nullable', 'array'],
@@ -175,9 +174,9 @@ class ProjectController extends Controller
         ]);
 
         $thumbnailPath = $project->thumbnail_path;
-        if ($request->hasFile('thumbnail_file')) {
-            $path = $request->file('thumbnail_file')->store('thumbnails', 'public');
-            $thumbnailPath = '/storage/' . $path;
+        if ($request->hasFile('thumbnail_file') && $request->file('thumbnail_file')->isValid()) {
+            MediaStorage::delete($project->thumbnail_path);
+            $thumbnailPath = MediaStorage::store($request->file('thumbnail_file'), 'thumbnails');
         } elseif (isset($validated['thumbnail_url']) && !empty($validated['thumbnail_url'])) {
             $thumbnailPath = $validated['thumbnail_url'];
         }
@@ -207,9 +206,14 @@ class ProjectController extends Controller
 
         // Delete requested gallery images
         if (!empty($validated['deleted_image_ids'])) {
-            ProjectImage::where('project_id', $project->id)
+            $imagesToDelete = ProjectImage::where('project_id', $project->id)
                 ->whereIn('id', $validated['deleted_image_ids'])
-                ->delete();
+                ->get();
+
+            foreach ($imagesToDelete as $img) {
+                MediaStorage::delete($img->image_path);
+                $img->delete();
+            }
         }
 
         // Current max sort order for existing images
@@ -220,10 +224,10 @@ class ProjectController extends Controller
         if ($request->hasFile('gallery_files')) {
             foreach ($request->file('gallery_files') as $file) {
                 if ($file && $file->isValid()) {
-                    $path = $file->store('gallery', 'public');
+                    $storedPath = MediaStorage::store($file, 'gallery');
                     ProjectImage::create([
                         'project_id' => $project->id,
-                        'image_path' => '/storage/' . $path,
+                        'image_path' => $storedPath,
                         'sort_order' => $nextOrder++,
                     ]);
                 }
@@ -254,6 +258,11 @@ class ProjectController extends Controller
 
         if (! $model) {
             return redirect()->route('admin.projects.index')->with('warning', 'Proyek tidak ditemukan atau telah dihapus sebelumnya.');
+        }
+
+        MediaStorage::delete($model->thumbnail_path);
+        foreach ($model->images as $img) {
+            MediaStorage::delete($img->image_path);
         }
 
         $model->tools()->detach();

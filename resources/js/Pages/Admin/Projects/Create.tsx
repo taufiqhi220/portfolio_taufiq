@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Category, ToolStack } from '@/types/portfolio';
+import { compressImageFile } from '@/Utils/imageCompressor';
 
 interface ProjectsCreateProps {
     categories: Category[];
@@ -10,6 +11,7 @@ interface ProjectsCreateProps {
 
 export default function ProjectsCreate({ categories, tools }: ProjectsCreateProps) {
     const [galleryUrlInput, setGalleryUrlInput] = useState('');
+    const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
 
     const { data, setData, post, processing, errors } = useForm({
         category_id: categories[0]?.id || '',
@@ -66,7 +68,9 @@ export default function ProjectsCreate({ categories, tools }: ProjectsCreateProp
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('admin.projects.store'));
+        post(route('admin.projects.store'), {
+            forceFormData: true,
+        });
     };
 
     return (
@@ -384,10 +388,30 @@ export default function ProjectsCreate({ categories, tools }: ProjectsCreateProp
                                 <label className="block text-xs font-mono font-semibold uppercase text-stone-700 tracking-wider mb-2">
                                     Upload Thumbnail Utama
                                 </label>
+                                {(thumbnailPreview || data.thumbnail_url) && (
+                                    <div className="mb-3">
+                                        <img
+                                            src={thumbnailPreview || data.thumbnail_url}
+                                            alt="Pratinjau Thumbnail"
+                                            className="h-24 w-40 object-cover rounded-xl border border-stone-200 shadow-2xs"
+                                            onError={() => setThumbnailPreview(null)}
+                                        />
+                                    </div>
+                                )}
                                 <input
                                     type="file"
                                     accept="image/*"
-                                    onChange={(e) => setData('thumbnail_file', e.target.files ? e.target.files[0] : null)}
+                                    onChange={async (e) => {
+                                        const rawFile = e.target.files ? e.target.files[0] : null;
+                                        if (rawFile) {
+                                            setThumbnailPreview(URL.createObjectURL(rawFile));
+                                            const optimized = await compressImageFile(rawFile, 1600, 0.85);
+                                            setData('thumbnail_file', optimized);
+                                        } else {
+                                            setThumbnailPreview(null);
+                                            setData('thumbnail_file', null);
+                                        }
+                                    }}
                                     className="w-full text-xs text-stone-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-stone-900 file:text-amber-400 hover:file:bg-stone-800 transition-all cursor-pointer"
                                 />
                                 {errors.thumbnail_file && <p className="text-xs text-rose-500 mt-1">{errors.thumbnail_file}</p>}
@@ -427,9 +451,12 @@ export default function ProjectsCreate({ categories, tools }: ProjectsCreateProp
                                         type="file"
                                         multiple
                                         accept="image/*"
-                                        onChange={(e) => {
-                                            const files = e.target.files ? Array.from(e.target.files) : [];
-                                            setData('gallery_files', files);
+                                        onChange={async (e) => {
+                                            const rawFiles = e.target.files ? Array.from(e.target.files) : [];
+                                            const optimizedFiles = await Promise.all(
+                                                rawFiles.map((f) => compressImageFile(f, 1600, 0.85))
+                                            );
+                                            setData('gallery_files', optimizedFiles);
                                         }}
                                         className="w-full text-xs text-stone-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-stone-900 file:text-amber-400 hover:file:bg-stone-800 cursor-pointer"
                                     />
