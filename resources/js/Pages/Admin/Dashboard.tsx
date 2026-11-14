@@ -1,8 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import { Project } from '@/types/portfolio';
 import ToolIcon from '@/Components/Portfolio/ToolIcon';
+
+const SHARE_LINKS = [
+    {
+        id: 'video',
+        title: 'Video Editor & Content Creator',
+        path: '/video',
+        description:
+            'Khusus untuk CV lamaran Video Editor atau Content Creator. Hanya menampilkan karya video, software editing, dan tombol pindah mode disembunyikan.',
+    },
+    {
+        id: 'web',
+        title: 'Web Developer',
+        path: '/web',
+        description:
+            'Khusus untuk CV lamaran Web Developer. Hanya menampilkan proyek web, tech stack pemrograman, dan tombol pindah mode disembunyikan.',
+    },
+    {
+        id: 'home',
+        title: 'Utama (Dua Mode)',
+        path: '/',
+        description:
+            'Halaman utama dengan tombol switcher untuk berpindah antara Web Developer dan Video Editor & Content Creator.',
+    },
+];
 
 interface DashboardStats {
     total_projects: number;
@@ -32,6 +56,26 @@ export default function AdminDashboard({
     recentProjects,
     recentInquiries,
 }: AdminDashboardProps) {
+    const [copiedId, setCopiedId] = useState<string | null>(null);
+
+    const buildFullUrl = (path: string) => {
+        if (typeof window === 'undefined') return path;
+        return `${window.location.origin}${path === '/' ? '' : path}`;
+    };
+
+    const handleCopyLink = async (id: string, path: string) => {
+        const fullUrl = buildFullUrl(path);
+        try {
+            await navigator.clipboard.writeText(fullUrl);
+            setCopiedId(id);
+            setTimeout(() => {
+                setCopiedId((current) => (current === id ? null : current));
+            }, 2000);
+        } catch {
+            window.prompt('Salin tautan berikut:', fullUrl);
+        }
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -145,6 +189,61 @@ export default function AdminDashboard({
                             </svg>
                         </div>
                     </Link>
+                </div>
+
+                {/* Shareable CV Links Section */}
+                <div className="bg-white/95 rounded-2xl border border-stone-200/80 shadow-2xs overflow-hidden">
+                    <div className="p-5 border-b border-stone-200/80 bg-stone-50/50">
+                        <h3 className="font-heading font-bold text-stone-900 text-sm">
+                            Tautan Portofolio Khusus Lamaran (CV)
+                        </h3>
+                        <p className="text-xs font-mono text-stone-500 mt-1">
+                            Salin tautan di bawah untuk memfokuskan tampilan portofolio sesuai posisi yang dilamar.
+                        </p>
+                    </div>
+                    <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {SHARE_LINKS.map((item) => {
+                            const fullUrl = buildFullUrl(item.path);
+                            const isCopied = copiedId === item.id;
+
+                            return (
+                                <div
+                                    key={item.id}
+                                    className="rounded-xl border border-stone-200/80 bg-stone-50/60 p-4 flex flex-col justify-between gap-3"
+                                >
+                                    <div className="space-y-2">
+                                        <h4 className="font-heading font-bold text-sm text-stone-900">
+                                            {item.title}
+                                        </h4>
+                                        <p className="text-xs text-stone-600 leading-relaxed">
+                                            {item.description}
+                                        </p>
+                                        <div className="rounded-lg bg-white border border-stone-200/80 px-2.5 py-1.5 font-mono text-[11px] text-stone-700 break-all">
+                                            {fullUrl}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 pt-1">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleCopyLink(item.id, item.path)}
+                                            className="min-h-[40px] flex-1 px-3 py-1.5 rounded-lg bg-stone-950 hover:bg-stone-850 text-stone-50 text-xs font-mono font-semibold transition-colors cursor-pointer"
+                                        >
+                                            {isCopied ? 'Tersalin' : 'Salin Link'}
+                                        </button>
+                                        <a
+                                            href={item.path}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="min-h-[40px] inline-flex items-center px-3 py-1.5 rounded-lg bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 text-xs font-mono font-medium transition-colors"
+                                        >
+                                            Buka
+                                        </a>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
 
                 {/* Content Section: Recent Projects & Recent Messages */}

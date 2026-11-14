@@ -1,3 +1,5 @@
+export type PortfolioRole = 'video' | 'web';
+
 export interface Category {
     id: number;
     name: string;

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', [PortfolioController::class, 'index'])->name('home');
+Route::get('/video', [PortfolioController::class, 'index'])->defaults('lockedRole', 'video')->name('portfolio.video');
+Route::get('/web', [PortfolioController::class, 'index'])->defaults('lockedRole', 'web')->name('portfolio.web');
 Route::post('/contact', [PortfolioController::class, 'submitInquiry'])->name('contact.submit');
 
 // Serve uploaded storage files directly on serverless hosting (with PostgreSQL fallback)

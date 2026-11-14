@@ -241,4 +241,35 @@ class PortfolioTest extends TestCase
             config(['cache.default' => $previousDriver]);
         }
     }
+
+    public function test_dedicated_role_routes_and_query_params_set_locked_role_prop(): void
+    {
+        $this->get('/')
+            ->assertStatus(200)
+            ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+                ->component('Welcome')
+                ->where('lockedRole', null)
+            );
+
+        $this->get('/video')
+            ->assertStatus(200)
+            ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+                ->component('Welcome')
+                ->where('lockedRole', 'video')
+            );
+
+        $this->get('/web')
+            ->assertStatus(200)
+            ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+                ->component('Welcome')
+                ->where('lockedRole', 'web')
+            );
+
+        $this->get('/?role=video')
+            ->assertStatus(200)
+            ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+                ->component('Welcome')
+                ->where('lockedRole', 'video')
+            );
+    }
 }

@@ -26,8 +26,11 @@ class PortfolioController extends Controller
     /**
      * Display the public portfolio page.
      */
-    public function index(): Response
+    public function index(Request $request, ?string $lockedRole = null): Response
     {
+        $roleParam = $lockedRole ?? $request->query('role') ?? $request->query('mode');
+        $resolvedLockedRole = in_array($roleParam, ['video', 'web'], true) ? $roleParam : null;
+
         $defaultProfile = new ProfileSetting([
             'full_name' => 'Taufiq Hidayat',
             'headline' => 'Full-Stack Web Developer & Creative Video Editor',
@@ -198,6 +201,7 @@ class PortfolioController extends Controller
             'categories' => $categories,
             'projects' => $projects,
             'tools' => $tools,
+            'lockedRole' => $resolvedLockedRole,
         ]);
     }
 

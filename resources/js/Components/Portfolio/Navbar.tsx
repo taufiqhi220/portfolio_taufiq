@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
-import { Profile } from '@/types/portfolio';
+import { PortfolioRole, Profile } from '@/types/portfolio';
+
+const ROLE_OPTIONS: { id: PortfolioRole; label: string }[] = [
+    { id: 'web', label: 'Web Developer' },
+    { id: 'video', label: 'Video & Konten' },
+];
 
 interface NavbarProps {
     profile: Profile;
+    activeRole: PortfolioRole;
+    isRoleLocked?: boolean;
+    onRoleChange?: (role: PortfolioRole) => void;
     auth?: {
         user?: {
             id: number;
@@ -13,7 +21,13 @@ interface NavbarProps {
     };
 }
 
-export default function Navbar({ profile, auth }: NavbarProps) {
+export default function Navbar({
+    profile,
+    activeRole,
+    isRoleLocked = false,
+    onRoleChange,
+    auth,
+}: NavbarProps) {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -48,7 +62,34 @@ export default function Navbar({ profile, auth }: NavbarProps) {
                 </a>
 
                 {/* Desktop Navigation */}
-                <nav className="hidden md:flex items-center gap-7 text-[13px] font-medium text-stone-600">
+                <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-stone-600">
+                    {!isRoleLocked && onRoleChange && (
+                        <div
+                            role="group"
+                            aria-label="Pilih mode portofolio"
+                            className="inline-flex items-center p-1 rounded-lg bg-stone-200/70 border border-stone-300/70 text-xs font-mono"
+                        >
+                            {ROLE_OPTIONS.map((option) => {
+                                const isActive = activeRole === option.id;
+                                return (
+                                    <button
+                                        key={option.id}
+                                        type="button"
+                                        aria-pressed={isActive}
+                                        onClick={() => onRoleChange(option.id)}
+                                        className={`px-2.5 py-1 rounded-md transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-600 ${
+                                            isActive
+                                                ? 'bg-stone-950 text-white font-semibold shadow-2xs'
+                                                : 'text-stone-600 hover:text-stone-950'
+                                        }`}
+                                    >
+                                        {option.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
+
                     <a href="#karya" className="hover:text-stone-950 transition-colors">Karya</a>
                     <a href="#tentang" className="hover:text-stone-950 transition-colors">Tentang</a>
                     <a href="#kontak" className="hover:text-stone-950 transition-colors">Kontak</a>
@@ -111,10 +152,41 @@ export default function Navbar({ profile, auth }: NavbarProps) {
             {/* Mobile Animated Dropdown Drawer */}
             <div
                 className={`md:hidden overflow-hidden transition-all duration-300 ease-out bg-[#FAF8F5]/95 backdrop-blur-xl border-b border-stone-200/80 shadow-md ${
-                    mobileMenuOpen ? 'max-h-80 opacity-100 py-4' : 'max-h-0 opacity-0 py-0'
+                    mobileMenuOpen ? 'max-h-96 opacity-100 py-4' : 'max-h-0 opacity-0 py-0'
                 }`}
             >
                 <div className="max-w-7xl mx-auto px-5 sm:px-8 space-y-2">
+                    {!isRoleLocked && onRoleChange && (
+                        <div className="pb-2.5 mb-2 border-b border-stone-200/70">
+                            <span className="block font-mono text-[11px] uppercase tracking-wider text-stone-500 mb-2">
+                                Mode Portofolio
+                            </span>
+                            <div className="grid grid-cols-2 gap-2">
+                                {ROLE_OPTIONS.map((option) => {
+                                    const isActive = activeRole === option.id;
+                                    return (
+                                        <button
+                                            key={option.id}
+                                            type="button"
+                                            aria-pressed={isActive}
+                                            onClick={() => {
+                                                onRoleChange(option.id);
+                                                setMobileMenuOpen(false);
+                                            }}
+                                            className={`min-h-[44px] px-3 py-2 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-600 ${
+                                                isActive
+                                                    ? 'bg-stone-950 text-white shadow-xs'
+                                                    : 'bg-white border border-stone-300 text-stone-700 hover:bg-stone-100'
+                                            }`}
+                                        >
+                                            {option.label}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
                     <a
                         href="#karya"
                         onClick={() => setMobileMenuOpen(false)}

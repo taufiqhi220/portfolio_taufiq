@@ -1,11 +1,12 @@
-import React, { useState, useMemo } from 'react';
-import { Category, Project } from '@/types/portfolio';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Category, PortfolioRole, Project } from '@/types/portfolio';
 import ProjectCard from './ProjectCard';
 import Reveal from './Reveal';
 
 interface SegmentedPortfolioProps {
     categories: Category[];
     projects: Project[];
+    activeRole: PortfolioRole;
     onPlayVideo: (project: Project) => void;
     onViewDetail: (project: Project) => void;
 }
@@ -13,12 +14,20 @@ interface SegmentedPortfolioProps {
 export default function SegmentedPortfolio({
     categories,
     projects,
+    activeRole,
     onPlayVideo,
     onViewDetail,
 }: SegmentedPortfolioProps) {
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [selectedToolSlug, setSelectedToolSlug] = useState<string>('all');
+
+    // Clear active category and tool filters when switching portfolio role
+    useEffect(() => {
+        setSelectedCategory('all');
+        setSelectedToolSlug('all');
+        setSearchQuery('');
+    }, [activeRole]);
 
     // Extract all unique tools available in the project list for secondary filtering
     const availableTools = useMemo(() => {
@@ -80,10 +89,12 @@ export default function SegmentedPortfolio({
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-stone-200/40 gap-6">
                         <div>
                             <div className="font-mono text-xs text-stone-500 uppercase tracking-widest mb-2">
-                                02 / Karya Terpilih
+                                {activeRole === 'video' ? '02 / Karya Video & Konten' : '02 / Proyek Web'}
                             </div>
                             <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-stone-900 tracking-tight">
-                                Koleksi Proyek &amp; Studi Kasus
+                                {activeRole === 'video'
+                                    ? 'Koleksi Karya Video & Konten'
+                                    : 'Koleksi Proyek & Aplikasi Web'}
                             </h2>
                         </div>
 

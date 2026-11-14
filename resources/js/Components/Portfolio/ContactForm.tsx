@@ -1,13 +1,17 @@
 import React from 'react';
-import { Profile } from '@/types/portfolio';
+import { PortfolioRole, Profile } from '@/types/portfolio';
 import Reveal from './Reveal';
 
 interface ContactFormProps {
     profile: Profile;
+    activeRole: PortfolioRole;
 }
 
-export default function ContactForm({ profile }: ContactFormProps) {
-    const hasSocialLinks = Boolean(profile.github_url || profile.linkedin_url);
+export default function ContactForm({ profile, activeRole }: ContactFormProps) {
+    const showGithub = Boolean(profile.github_url && (activeRole === 'web' || !profile.linkedin_url));
+    const showLinkedin = Boolean(profile.linkedin_url);
+    const hasSocialLinks = showGithub || showLinkedin;
+    const linkCount = Number(showGithub) + Number(showLinkedin);
 
     return (
         <section id="kontak" className="py-20 md:py-28 relative">
@@ -22,7 +26,9 @@ export default function ContactForm({ profile }: ContactFormProps) {
                     </h2>
 
                     <p className="text-base sm:text-lg text-stone-600 max-w-xl mx-auto mb-10 leading-relaxed">
-                        Tertarik berdiskusi mengenai pengembangan web, editing video, atau peluang kerja sama? Silakan terhubung melalui tautan berikut.
+                        {activeRole === 'video'
+                            ? 'Tertarik bekerja sama untuk video editing, produksi konten kreatif, atau kebutuhan tim media? Silakan terhubung melalui tautan berikut.'
+                            : 'Tertarik bekerja sama untuk pengembangan website, sistem informasi, atau posisi web developer? Silakan terhubung melalui tautan berikut.'}
                     </p>
                 </Reveal>
 
@@ -33,8 +39,12 @@ export default function ContactForm({ profile }: ContactFormProps) {
                                 Tautan Profil
                             </span>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {profile.github_url && (
+                            <div
+                                className={`grid gap-3 ${
+                                    linkCount > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 max-w-xs mx-auto'
+                                }`}
+                            >
+                                {showGithub && profile.github_url && (
                                     <a
                                         href={profile.github_url}
                                         target="_blank"
@@ -48,7 +58,7 @@ export default function ContactForm({ profile }: ContactFormProps) {
                                     </a>
                                 )}
 
-                                {profile.linkedin_url && (
+                                {showLinkedin && profile.linkedin_url && (
                                     <a
                                         href={profile.linkedin_url}
                                         target="_blank"
