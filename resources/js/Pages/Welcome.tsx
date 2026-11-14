@@ -6,12 +6,14 @@ import Hero from '@/Components/Portfolio/Hero';
 import SegmentedPortfolio from '@/Components/Portfolio/SegmentedPortfolio';
 import ToolsArsenal from '@/Components/Portfolio/ToolsArsenal';
 import ContactForm from '@/Components/Portfolio/ContactForm';
+import { lazy, Suspense } from 'react';
 import Footer from '@/Components/Portfolio/Footer';
-import VideoPlayerModal from '@/Components/Portfolio/VideoPlayerModal';
-import ProjectDetailModal from '@/Components/Portfolio/ProjectDetailModal';
 import FluidBackground from '@/Components/Portfolio/FluidBackground';
 import MarqueeTicker from '@/Components/Portfolio/MarqueeTicker';
 import FlashNotification from '@/Components/Feedback/FlashNotification';
+
+const VideoPlayerModal = lazy(() => import('@/Components/Portfolio/VideoPlayerModal'));
+const ProjectDetailModal = lazy(() => import('@/Components/Portfolio/ProjectDetailModal'));
 
 interface WelcomeProps {
     profile: Profile;
@@ -157,22 +159,28 @@ export default function Welcome({
                 {/* Footer Section */}
                 <Footer profile={profile} />
 
-                {/* Interactive Video Player Modal (YouTube, Google Drive, Vimeo, MP4) */}
-                <VideoPlayerModal
-                    project={activeVideoProject}
-                    initialEpisodeIndex={activeEpisodeIndex}
-                    onClose={handleCloseVideo}
-                />
+                <Suspense fallback={null}>
+                    {/* Interactive Video Player Modal (YouTube, Google Drive, Vimeo, MP4) */}
+                    {activeVideoProject && (
+                        <VideoPlayerModal
+                            project={activeVideoProject}
+                            initialEpisodeIndex={activeEpisodeIndex}
+                            onClose={handleCloseVideo}
+                        />
+                    )}
 
-                {/* Comprehensive Project Detail Case Study Modal */}
-                <ProjectDetailModal
-                    project={activeDetailProject}
-                    onClose={handleCloseDetail}
-                    onPlayVideo={(project, episodeIndex = 0) => {
-                        handleCloseDetail();
-                        handleOpenVideo(project, episodeIndex);
-                    }}
-                />
+                    {/* Comprehensive Project Detail Case Study Modal */}
+                    {activeDetailProject && (
+                        <ProjectDetailModal
+                            project={activeDetailProject}
+                            onClose={handleCloseDetail}
+                            onPlayVideo={(project, episodeIndex = 0) => {
+                                handleCloseDetail();
+                                handleOpenVideo(project, episodeIndex);
+                            }}
+                        />
+                    )}
+                </Suspense>
             </div>
         </>
     );

@@ -35,6 +35,7 @@ export default function ToolIcon({ name, slug, iconUrl, className = 'w-6 h-6' }:
                 alt={name}
                 className={`${className} object-contain rounded shrink-0`}
                 loading="lazy"
+                decoding="async"
                 onError={() => setImageError(true)}
             />
         );

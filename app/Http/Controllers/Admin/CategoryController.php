@@ -41,6 +41,8 @@ class CategoryController extends Controller
             'is_active' => true,
         ]);
 
+        \App\Http\Controllers\PortfolioController::clearPortfolioCache();
+
         return redirect()->route('admin.categories.index')->with('success', 'Kategori baru berhasil ditambahkan.');
     }
 
@@ -64,6 +66,8 @@ class CategoryController extends Controller
             'is_active' => $request->boolean('is_active', true),
         ]);
 
+        \App\Http\Controllers\PortfolioController::clearPortfolioCache();
+
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
@@ -82,6 +86,7 @@ class CategoryController extends Controller
         }
 
         $model->delete();
+        \App\Http\Controllers\PortfolioController::clearPortfolioCache();
 
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil dihapus.');
     }

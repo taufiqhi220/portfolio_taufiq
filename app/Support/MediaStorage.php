@@ -91,7 +91,9 @@ class MediaStorage
 
                     return response($binary, 200, [
                         'Content-Type' => $mime,
-                        'Cache-Control' => 'public, max-age=31536000, immutable',
+                        'Cache-Control' => 'public, max-age=31536000, s-maxage=31536000, immutable',
+                        'CDN-Cache-Control' => 'public, s-maxage=31536000, immutable',
+                        'Vercel-CDN-Cache-Control' => 'public, s-maxage=31536000, immutable',
                     ]);
                 }
             }
@@ -106,7 +108,9 @@ class MediaStorage
 
             return response()->file($bundledPath, [
                 'Content-Type' => $mime,
-                'Cache-Control' => 'public, max-age=31536000, immutable',
+                'Cache-Control' => 'public, max-age=31536000, s-maxage=31536000, immutable',
+                'CDN-Cache-Control' => 'public, s-maxage=31536000, immutable',
+                'Vercel-CDN-Cache-Control' => 'public, s-maxage=31536000, immutable',
             ]);
         }
 
@@ -129,7 +133,9 @@ class MediaStorage
 
                         return response($binary, 200, [
                             'Content-Type' => $mime,
-                            'Cache-Control' => 'public, max-age=31536000, immutable',
+                            'Cache-Control' => 'public, max-age=31536000, s-maxage=31536000, immutable',
+                            'CDN-Cache-Control' => 'public, s-maxage=31536000, immutable',
+                            'Vercel-CDN-Cache-Control' => 'public, s-maxage=31536000, immutable',
                         ]);
                     }
                 }

@@ -1,4 +1,3 @@
-import 'sweetalert2/dist/sweetalert2.min.css';
 import '../css/app.css';
 import './bootstrap';
 

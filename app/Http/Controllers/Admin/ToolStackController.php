@@ -61,6 +61,8 @@ class ToolStackController extends Controller
             'sort_order' => $validated['sort_order'] ?? 0,
         ]);
 
+        \App\Http\Controllers\PortfolioController::clearPortfolioCache();
+
         return redirect()->route('admin.tools.index')->with('success', 'Tech stack berhasil ditambahkan.');
     }
 
@@ -103,6 +105,8 @@ class ToolStackController extends Controller
             'sort_order' => $validated['sort_order'] ?? 0,
         ]);
 
+        \App\Http\Controllers\PortfolioController::clearPortfolioCache();
+
         return redirect()->route('admin.tools.index')->with('success', 'Tech stack berhasil diperbarui.');
     }
 
@@ -122,6 +126,7 @@ class ToolStackController extends Controller
         MediaStorage::delete($model->icon_name);
         $model->projects()->detach();
         $model->delete();
+        \App\Http\Controllers\PortfolioController::clearPortfolioCache();
 
         return redirect()->route('admin.tools.index')->with('success', 'Tech stack berhasil dihapus.');
     }

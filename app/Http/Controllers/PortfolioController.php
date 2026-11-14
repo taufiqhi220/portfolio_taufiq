@@ -13,6 +13,16 @@ use Inertia\Response;
 
 class PortfolioController extends Controller
 {
+    public const PUBLIC_CACHE_KEY = 'portfolio.public_payload.v1';
+
+    /**
+     * Clear the cached public portfolio payload after admin updates.
+     */
+    public static function clearPortfolioCache(): void
+    {
+        \Illuminate\Support\Facades\Cache::forget(self::PUBLIC_CACHE_KEY);
+    }
+
     /**
      * Display the public portfolio page.
      */
@@ -26,23 +36,31 @@ class PortfolioController extends Controller
         ]);
 
         try {
-            ProfileSetting::dropDeprecatedColumnsIfNeeded();
-            $profile = ProfileSetting::first() ?? $defaultProfile;
+            $cached = \Illuminate\Support\Facades\Cache::remember(
+                self::PUBLIC_CACHE_KEY,
+                now()->addMinutes(10),
+                function () use ($defaultProfile): array {
+                    $profile = ProfileSetting::first() ?? $defaultProfile;
 
-            $categories = Category::where('is_active', true)
-                ->withCount('projects')
-                ->orderBy('sort_order', 'asc')
-                ->get();
+                    $categories = Category::where('is_active', true)
+                        ->withCount('projects')
+                        ->orderBy('sort_order', 'asc')
+                        ->get();
 
-            $projects = Project::with(['category', 'tools', 'images'])
-                ->orderBy('is_featured', 'desc')
-                ->orderBy('sort_order', 'asc')
-                ->get()
-                ->each(fn (Project $project) => $project->resolvePlaylistIfNeeded());
+                    $projects = Project::with(['category', 'tools', 'images'])
+                        ->orderBy('is_featured', 'desc')
+                        ->orderBy('sort_order', 'asc')
+                        ->get();
 
-            $tools = ToolStack::orderBy('sort_order', 'asc')
-                ->get()
-                ->groupBy('group_type');
+                    $tools = ToolStack::orderBy('sort_order', 'asc')
+                        ->get()
+                        ->groupBy('group_type');
+
+                    return compact('profile', 'categories', 'projects', 'tools');
+                }
+            );
+
+            ['profile' => $profile, 'categories' => $categories, 'projects' => $projects, 'tools' => $tools] = $cached;
         } catch (\Throwable $e) {
             report($e);
             $profile = $defaultProfile;

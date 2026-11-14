@@ -20,8 +20,7 @@ class ProjectController extends Controller
         $projects = Project::with(['category', 'tools', 'images'])
             ->orderBy('sort_order', 'asc')
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->each(fn (Project $project) => $project->resolvePlaylistIfNeeded());
+            ->get();
 
         return Inertia::render('Admin/Projects/Index', [
             'projects' => $projects,
@@ -134,6 +133,8 @@ class ProjectController extends Controller
                 }
             }
         }
+
+        \App\Http\Controllers\PortfolioController::clearPortfolioCache();
 
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil ditambahkan.');
     }
@@ -263,6 +264,8 @@ class ProjectController extends Controller
             }
         }
 
+        \App\Http\Controllers\PortfolioController::clearPortfolioCache();
+
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil diperbarui.');
     }
 
@@ -284,6 +287,7 @@ class ProjectController extends Controller
         $model->tools()->detach();
         $model->images()->delete();
         $model->delete();
+        \App\Http\Controllers\PortfolioController::clearPortfolioCache();
 
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil dihapus.');
     }

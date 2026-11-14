@@ -81,6 +81,7 @@ export default function ProjectDetailModal({ project, onClose, onPlayVideo }: Pr
                         <img
                             src={currentActiveImage}
                             alt={project.title}
+                            decoding="async"
                             className="w-full h-full object-cover opacity-95 transition-all duration-300"
                         />
                     ) : isVideo ? (
@@ -181,6 +182,8 @@ export default function ProjectDetailModal({ project, onClose, onPlayVideo }: Pr
                                     <img
                                         src={img.url}
                                         alt={img.caption || `Screenshot ${idx + 1}`}
+                                        loading="lazy"
+                                        decoding="async"
                                         className="w-full h-full object-cover"
                                     />
                                 </button>

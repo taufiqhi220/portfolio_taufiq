@@ -15,7 +15,17 @@ Route::post('/contact', [PortfolioController::class, 'submitInquiry'])->name('co
 // Serve uploaded storage files directly on serverless hosting (with PostgreSQL fallback)
 Route::get('/storage/{path}', function (string $path) {
     return \App\Support\MediaStorage::serve($path);
-})->where('path', '.*')->name('storage.local');
+})->where('path', '.*')
+    ->withoutMiddleware([
+        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Cookie\Middleware\EncryptCookies::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        \App\Http\Middleware\HandleInertiaRequests::class,
+        \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+    ])
+    ->name('storage.local');
 
 // Admin Protected Routes
 Route::middleware(['auth'])->group(function () {

@@ -51,6 +51,8 @@ export default function ProjectCard({ project, index, onPlayVideo, onViewDetail 
                     <img
                         src={project.thumbnail_path}
                         alt={project.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                     />
                 ) : isVideo ? (

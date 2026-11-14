@@ -180,6 +180,8 @@ export default function Hero({ profile, projects = [], onPlayVideo, onViewDetail
                                                 <img
                                                     src={activeProject.thumbnail_path}
                                                     alt={activeProject.title}
+                                                    fetchPriority="high"
+                                                    decoding="async"
                                                     className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500 opacity-90"
                                                 />
                                             ) : spotlightTab === 'video' ? (

@@ -1,3 +1,4 @@
+import 'sweetalert2/dist/sweetalert2.min.css';
 import Swal, { SweetAlertIcon } from 'sweetalert2';
 
 // Reusable SweetAlert2 Toast Mixin with elegant editorial styling

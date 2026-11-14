@@ -13,8 +13,6 @@ class ProfileSettingController extends Controller
 {
     public function edit(): Response
     {
-        ProfileSetting::dropDeprecatedColumnsIfNeeded();
-
         $profile = ProfileSetting::firstOrCreate(
             ['id' => 1],
             [
@@ -49,6 +47,7 @@ class ProfileSettingController extends Controller
 
         $profile = ProfileSetting::firstOrCreate(['id' => 1]);
         $profile->update($validated);
+        \App\Http\Controllers\PortfolioController::clearPortfolioCache();
 
         return redirect()->back()->with('success', 'Pengaturan profil berhasil diperbarui.');
     }

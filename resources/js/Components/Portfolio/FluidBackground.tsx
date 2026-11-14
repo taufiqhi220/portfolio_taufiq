@@ -1,22 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 export default function FluidBackground() {
-    const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.3 });
+    const spotlightRef = useRef<HTMLDivElement>(null);
+    const orbitRef = useRef<HTMLDivElement>(null);
+    const sphere1Ref = useRef<HTMLDivElement>(null);
+    const sphere2Ref = useRef<HTMLDivElement>(null);
+    const sphere3Ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        let rafId: number | null = null;
+        let latestX = 0.5;
+        let latestY = 0.3;
+
+        const applyParallax = () => {
+            rafId = null;
+            const offsetX = (latestX - 0.5) * 35;
+            const offsetY = (latestY - 0.5) * 35;
+
+            if (spotlightRef.current) {
+                spotlightRef.current.style.background = `radial-gradient(650px circle at ${latestX * 100}% ${latestY * 100}%, rgba(246, 232, 210, 0.45), transparent 70%)`;
+            }
+            if (orbitRef.current) {
+                orbitRef.current.style.transform = `translate3d(calc(-50% + ${offsetX * 0.2}px), ${offsetY * 0.15}px, 0)`;
+            }
+            if (sphere1Ref.current) {
+                sphere1Ref.current.style.transform = `translate3d(${offsetX * 0.3}px, ${offsetY * 0.3}px, 0)`;
+            }
+            if (sphere2Ref.current) {
+                sphere2Ref.current.style.transform = `translate3d(${-offsetX * 0.3}px, ${-offsetY * 0.3}px, 0)`;
+            }
+            if (sphere3Ref.current) {
+                sphere3Ref.current.style.transform = `translate3d(${offsetX * 0.25}px, ${offsetY * 0.25}px, 0)`;
+            }
+        };
+
         const handleMouseMove = (e: MouseEvent) => {
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            setMousePos({ x, y });
+            latestX = e.clientX / window.innerWidth;
+            latestY = e.clientY / window.innerHeight;
+            if (rafId === null) {
+                rafId = window.requestAnimationFrame(applyParallax);
+            }
         };
 
         window.addEventListener('mousemove', handleMouseMove, { passive: true });
-        return () => window.removeEventListener('mousemove', handleMouseMove);
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            if (rafId !== null) {
+                window.cancelAnimationFrame(rafId);
+            }
+        };
     }, []);
-
-    // Gentle parallax offsets
-    const offsetX = (mousePos.x - 0.5) * 35;
-    const offsetY = (mousePos.y - 0.5) * 35;
 
     return (
         <div
@@ -30,17 +63,19 @@ export default function FluidBackground() {
 
             {/* Interactive Mouse-Following Ambient Spotlight (Consistent Circle) */}
             <div
+                ref={spotlightRef}
                 className="absolute inset-0 opacity-70 transition-opacity duration-300"
                 style={{
-                    background: `radial-gradient(650px circle at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(246, 232, 210, 0.45), transparent 70%)`,
+                    background: 'radial-gradient(650px circle at 50% 30%, rgba(246, 232, 210, 0.45), transparent 70%)',
                 }}
             />
 
             {/* Solar System Concentric Circular Orbits (Consistently Perfect Circles / Garis Tata Surya) */}
             <div
+                ref={orbitRef}
                 className="absolute -top-[220px] left-1/2 -translate-x-1/2 w-[1400px] h-[1400px] pointer-events-none transition-transform duration-700 ease-out flex items-center justify-center"
                 style={{
-                    transform: `translate3d(calc(-50% + ${offsetX * 0.2}px), ${offsetY * 0.15}px, 0)`,
+                    transform: 'translate3d(-50%, -1.05px, 0)',
                 }}
             >
                 {/* Central Luminous Core Star */}
@@ -90,9 +125,10 @@ export default function FluidBackground() {
             {/* Consistent Circular Ambient Spheres (100% Rounded-Full, NO deformed morphing) */}
             {/* Sphere 1: Top Hero Area */}
             <div
+                ref={sphere1Ref}
                 className="absolute -top-[10%] -left-[5%] w-[45vw] h-[45vw] max-w-[650px] max-h-[650px] transition-transform duration-1000 ease-out"
                 style={{
-                    transform: `translate3d(${offsetX * 0.3}px, ${offsetY * 0.3}px, 0)`,
+                    transform: 'translate3d(0px, -2.1px, 0)',
                 }}
             >
                 <div
@@ -106,9 +142,10 @@ export default function FluidBackground() {
 
             {/* Sphere 2: Mid Right Portfolio Area */}
             <div
+                ref={sphere2Ref}
                 className="absolute top-[35%] -right-[8%] w-[42vw] h-[42vw] max-w-[600px] max-h-[600px] transition-transform duration-1000 ease-out"
                 style={{
-                    transform: `translate3d(${-offsetX * 0.3}px, ${-offsetY * 0.3}px, 0)`,
+                    transform: 'translate3d(0px, 2.1px, 0)',
                 }}
             >
                 <div
@@ -122,9 +159,10 @@ export default function FluidBackground() {
 
             {/* Sphere 3: Bottom Contact Area */}
             <div
+                ref={sphere3Ref}
                 className="absolute top-[70%] left-[5%] w-[48vw] h-[48vw] max-w-[700px] max-h-[700px] transition-transform duration-1000 ease-out"
                 style={{
-                    transform: `translate3d(${offsetX * 0.25}px, ${offsetY * 0.25}px, 0)`,
+                    transform: 'translate3d(0px, -1.75px, 0)',
                 }}
             >
                 <div
