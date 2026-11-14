@@ -2,15 +2,14 @@ import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 export default function Login({
     status,
-    canResetPassword,
 }: {
     status?: string;
-    canResetPassword: boolean;
+    canResetPassword?: boolean;
 }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
@@ -97,15 +96,6 @@ export default function Login({
                             Ingat sesi ini
                         </span>
                     </label>
-
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="text-xs font-mono text-stone-500 hover:text-stone-900 underline underline-offset-4 transition-colors"
-                        >
-                            Lupa kata sandi?
-                        </Link>
-                    )}
                 </div>
 
                 <div className="pt-2">
