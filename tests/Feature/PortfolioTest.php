@@ -199,4 +199,46 @@ class PortfolioTest extends TestCase
         $this->assertEquals('1:02:25', $project->extra_meta['episodes'][0]['duration']);
         $this->assertEquals('https://www.youtube.com/embed/dIvwUxv8yHc?autoplay=1&rel=0', $project->embed_url);
     }
+
+    public function test_public_portfolio_page_serves_valid_arrays_from_file_cache_on_subsequent_requests(): void
+    {
+        $category = Category::create([
+            'name' => 'Web Development',
+            'slug' => 'web-development',
+            'display_mode' => 'web',
+            'is_active' => true,
+            'sort_order' => 1,
+        ]);
+
+        Project::create([
+            'category_id' => $category->id,
+            'title' => 'Cached Portfolio Project',
+            'slug' => 'cached-portfolio-project',
+            'summary' => 'Proyek untuk verifikasi serialisasi file cache.',
+            'media_type' => 'image',
+        ]);
+
+        $previousDriver = config('cache.default');
+        config(['cache.default' => 'file']);
+        \App\Http\Controllers\PortfolioController::clearPortfolioCache();
+
+        try {
+            $firstResponse = $this->get('/');
+            $firstResponse->assertStatus(200);
+
+            $secondResponse = $this->get('/');
+            $secondResponse->assertStatus(200);
+            $secondResponse->assertDontSee('__PHP_Incomplete_Class_Name');
+            $secondResponse->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+                ->component('Welcome')
+                ->has('categories', 1)
+                ->has('projects', 1)
+                ->where('categories.0.name', 'Web Development')
+                ->where('projects.0.title', 'Cached Portfolio Project')
+            );
+        } finally {
+            \App\Http\Controllers\PortfolioController::clearPortfolioCache();
+            config(['cache.default' => $previousDriver]);
+        }
+    }
 }

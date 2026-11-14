@@ -13,7 +13,7 @@ use Inertia\Response;
 
 class PortfolioController extends Controller
 {
-    public const PUBLIC_CACHE_KEY = 'portfolio.public_payload.v1';
+    public const PUBLIC_CACHE_KEY = 'portfolio.public_payload.v2';
 
     /**
      * Clear the cached public portfolio payload after admin updates.
@@ -40,21 +40,27 @@ class PortfolioController extends Controller
                 self::PUBLIC_CACHE_KEY,
                 now()->addMinutes(10),
                 function () use ($defaultProfile): array {
-                    $profile = ProfileSetting::first() ?? $defaultProfile;
+                    $profile = (ProfileSetting::first() ?? $defaultProfile)->toArray();
 
                     $categories = Category::where('is_active', true)
                         ->withCount('projects')
                         ->orderBy('sort_order', 'asc')
-                        ->get();
+                        ->get()
+                        ->values()
+                        ->toArray();
 
                     $projects = Project::with(['category', 'tools', 'images'])
                         ->orderBy('is_featured', 'desc')
                         ->orderBy('sort_order', 'asc')
-                        ->get();
+                        ->get()
+                        ->values()
+                        ->toArray();
 
                     $tools = ToolStack::orderBy('sort_order', 'asc')
                         ->get()
-                        ->groupBy('group_type');
+                        ->groupBy('group_type')
+                        ->map(fn ($group) => $group->values()->toArray())
+                        ->toArray();
 
                     return compact('profile', 'categories', 'projects', 'tools');
                 }
