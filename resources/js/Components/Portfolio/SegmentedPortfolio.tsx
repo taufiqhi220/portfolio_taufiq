@@ -89,11 +89,11 @@ export default function SegmentedPortfolio({
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-stone-200/40 gap-6">
                         <div>
                             <div className="font-mono text-xs text-stone-500 uppercase tracking-widest mb-2">
-                                {activeRole === 'video' ? '02 / Karya Video & Konten' : '02 / Proyek Web'}
+                                {activeRole === 'video' ? '02 / Karya Video' : '02 / Proyek Web'}
                             </div>
                             <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-stone-900 tracking-tight">
                                 {activeRole === 'video'
-                                    ? 'Koleksi Karya Video & Konten'
+                                    ? 'Koleksi Karya Video'
                                     : 'Koleksi Proyek & Aplikasi Web'}
                             </h2>
                         </div>

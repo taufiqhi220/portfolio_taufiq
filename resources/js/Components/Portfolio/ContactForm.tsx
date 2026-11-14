@@ -27,7 +27,7 @@ export default function ContactForm({ profile, activeRole }: ContactFormProps) {
 
                     <p className="text-base sm:text-lg text-stone-600 max-w-xl mx-auto mb-10 leading-relaxed">
                         {activeRole === 'video'
-                            ? 'Tertarik bekerja sama untuk video editing, produksi konten kreatif, atau kebutuhan tim media? Silakan terhubung melalui tautan berikut.'
+                            ? 'Tertarik bekerja sama untuk proyek video editing, post-production, atau kebutuhan tim media? Silakan terhubung melalui tautan berikut.'
                             : 'Tertarik bekerja sama untuk pengembangan website, sistem informasi, atau posisi web developer? Silakan terhubung melalui tautan berikut.'}
                     </p>
                 </Reveal>

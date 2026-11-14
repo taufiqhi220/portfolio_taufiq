@@ -88,7 +88,7 @@ export default function ToolsArsenal({ tools = {}, profile, activeRole }: ToolsA
                                         Fokus:{' '}
                                         {profile?.headline ||
                                             (activeRole === 'video'
-                                                ? 'Video Editor & Content Creator'
+                                                ? 'Video Editor'
                                                 : 'Web Developer')}
                                     </span>
                                 </div>

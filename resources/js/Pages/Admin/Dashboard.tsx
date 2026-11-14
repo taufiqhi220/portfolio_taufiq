@@ -7,7 +7,7 @@ import ToolIcon from '@/Components/Portfolio/ToolIcon';
 const SHARE_LINKS = [
     {
         id: 'video',
-        title: 'Video Editor & Content Creator',
+        title: 'Video Editor',
         path: '/video',
         description:
             'Khusus untuk CV lamaran Video Editor atau Content Creator. Hanya menampilkan karya video, software editing, dan tombol pindah mode disembunyikan.',
@@ -24,7 +24,7 @@ const SHARE_LINKS = [
         title: 'Utama (Dua Mode)',
         path: '/',
         description:
-            'Halaman utama dengan tombol switcher untuk berpindah antara Web Developer dan Video Editor & Content Creator.',
+            'Halaman utama dengan tombol switcher untuk berpindah antara Web Developer dan Video Editor.',
     },
 ];
 

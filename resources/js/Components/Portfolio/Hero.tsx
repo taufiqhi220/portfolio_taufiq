@@ -120,7 +120,7 @@ export default function Hero({
                                                     : 'text-stone-700 hover:text-stone-950 hover:bg-stone-100/80'
                                             }`}
                                         >
-                                            Video Editor &amp; Content Creator
+                                            Video Editor
                                         </button>
                                     </div>
                                 </div>
@@ -131,7 +131,7 @@ export default function Hero({
                             </h1>
 
                             <p className="text-lg sm:text-2xl font-heading text-stone-800 font-semibold leading-snug max-w-2xl mb-3 sm:mb-4">
-                                {profile.headline || (activeRole === 'video' ? 'Video Editor & Content Creator' : 'Web Developer')}
+                                {profile.headline || (activeRole === 'video' ? 'Video Editor' : 'Web Developer')}
                             </p>
 
                             <p className="text-sm sm:text-base text-stone-700 font-normal leading-relaxed max-w-2xl mb-7 sm:mb-9">
@@ -291,7 +291,7 @@ export default function Hero({
                                                             <span className="w-0.5 bg-amber-400 rounded-full animate-eq-5" />
                                                         </div>
                                                         <span className="font-mono text-[10px] text-stone-400 tracking-wider">
-                                                            EDITING &bull; MOTION &bull; KONTEN
+                                                            EDITING &bull; MOTION &bull; COLOR
                                                         </span>
                                                     </div>
                                                 </div>
@@ -417,7 +417,7 @@ export default function Hero({
                                             Belum Ada Karya Terpasang
                                         </p>
                                         <p className="text-xs text-stone-500">
-                                            Karya {activeRole === 'video' ? 'video editing dan konten' : 'web development'} akan tampil di sini setelah ditambahkan di panel admin.
+                                            Karya {activeRole === 'video' ? 'video editing' : 'web development'} akan tampil di sini setelah ditambahkan di panel admin.
                                         </p>
                                     </div>
                                 )}

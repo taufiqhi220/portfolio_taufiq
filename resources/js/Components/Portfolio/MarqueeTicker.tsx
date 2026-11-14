@@ -3,7 +3,7 @@ import { PortfolioRole } from '@/types/portfolio';
 
 const VIDEO_DISCIPLINES = [
     'Video Editing',
-    'Content Creation',
+    'Post-Production',
     'Color Grading',
     'Motion Graphics',
     'Sound Design',

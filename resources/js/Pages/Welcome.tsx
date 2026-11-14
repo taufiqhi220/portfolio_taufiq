@@ -16,8 +16,8 @@ const ProjectDetailModal = lazy(() => import('@/Components/Portfolio/ProjectDeta
 
 const ROLE_PROFILE_OVERRIDES: Record<PortfolioRole, { headline: string; bio: string }> = {
     video: {
-        headline: 'Video Editor & Content Creator',
-        bio: 'Fresh graduate D4 Teknik Multimedia dan Jaringan dari Politeknik Negeri Ujung Pandang dengan minat pada video editing dan pembuatan konten. Berpengalaman mengerjakan penyuntingan video program televisi serta konten visual menggunakan Adobe Premiere Pro. Saya senang mempelajari hal baru dan menghasilkan karya visual yang komunikatif.',
+        headline: 'Video Editor',
+        bio: 'Fresh graduate D4 Teknik Multimedia dan Jaringan dari Politeknik Negeri Ujung Pandang dengan minat pada video editing dan post-production. Berpengalaman mengerjakan penyuntingan video program televisi serta visual menggunakan Adobe Premiere Pro. Saya senang mempelajari hal baru dan menghasilkan karya visual yang komunikatif.',
     },
     web: {
         headline: 'Web Developer',
@@ -208,7 +208,7 @@ export default function Welcome({
     };
 
     const roleTitleLabel =
-        activeRole === 'video' ? 'Video Editor & Content Creator' : 'Web Developer';
+        activeRole === 'video' ? 'Video Editor' : 'Web Developer';
 
     const pageTitle = roleProfile?.full_name
         ? `${roleProfile.full_name} | ${roleTitleLabel}`

@@ -4,7 +4,7 @@ import { PortfolioRole, Profile } from '@/types/portfolio';
 
 const ROLE_OPTIONS: { id: PortfolioRole; label: string }[] = [
     { id: 'web', label: 'Web Developer' },
-    { id: 'video', label: 'Video & Konten' },
+    { id: 'video', label: 'Video Editor' },
 ];
 
 interface NavbarProps {
